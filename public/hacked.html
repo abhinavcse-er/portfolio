@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Security Alert — Prank Demo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif;display:grid;place-items:center;overflow:hidden}body:before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 4px);pointer-events:none}.panel{width:min(92%,680px);border:1px solid #ff3030;background:rgba(20,5,7,.96);padding:clamp(24px,6vw,52px);text-align:center;box-shadow:0 0 55px #ff101033;position:relative}.tag{color:#ff4444;letter-spacing:5px;font-size:12px;font-weight:bold}h1{font-size:clamp(38px,9vw,76px);line-height:.98;color:#ff3434;margin:24px 0;text-shadow:0 0 18px #ff202088;animation:flicker 2.8s infinite}@keyframes flicker{0%,94%,100%{opacity:1}95%{opacity:.35}97%{opacity:.8}}.warning{font-size:18px;color:#ddd;line-height:1.5}.status{margin:30px auto 12px;text-align:left;max-width:420px;color:#ff7777;font-family:monospace;font-size:14px;line-height:2}.bar{height:8px;background:#381014;margin:8px auto 24px;max-width:420px;overflow:hidden}.fill{height:100%;width:0;background:#ff3030;animation:scan 5s ease-out forwards}@keyframes scan{to{width:100%}}button{border:0;background:#ff3030;color:#fff;font-weight:bold;padding:15px 25px;font-size:15px;cursor:pointer;margin-top:12px}button:hover{background:#d91e1e}.reveal{display:none;border:1px solid #40d98a;background:#082116;color:#b9ffda;padding:18px;margin-top:22px;line-height:1.6}.small{font-size:12px;color:#999;margin-top:22px}
+</style>
+</head>
+<body>
+<main class="panel">
+<div class="tag">■ SYSTEM SECURITY ALERT</div>
+<h1>YOU HAVE<br>BEEN HACKED!</h1>
+<p class="warning">Suspicious activity detected on this screen.<br>Do not panic. This is a simulated security alert.</p>
+<div class="status"><div>[!] Initializing threat scan...</div><div>[!] Checking system status...</div><div>[!] Simulating security breach...</div><div id="state">[ ] Scan in progress</div></div>
+<div class="bar"><div class="fill"></div></div>
+<button id="revealBtn">WHAT HAPPENED?</button>
+<div class="reveal" id="reveal"><strong>😄 JUST A PRANK!</strong><br>Your device has NOT been hacked. This page only displays a visual joke. No files were accessed and no information was collected.</div>
+<div class="small">DEMO SECURITY SCREEN · NO REAL SCAN OR SYSTEM ACCESS</div>
+</main>
+<script>
+setTimeout(()=>document.getElementById('state').textContent='[✓] Simulation complete',5000);
+document.getElementById('revealBtn').addEventListener('click',()=>{document.getElementById('reveal').style.display='block';document.getElementById('revealBtn').textContent='PRANK REVEALED';});
+</script>
+</body>
+</html>
