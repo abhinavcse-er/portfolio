@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Github, Linkedin, Mail, Menu, X,
   Code2, Terminal, Network, ShieldCheck, GitBranch, Star, Users, ExternalLink,
@@ -25,14 +25,48 @@ function App() {
   const projects = github?.repos?.length ? github.repos : fallbackProjects;
 
   useEffect(() => {
-    fetch('/api/github').then(r => { if (!r.ok) throw new Error('GitHub unavailable'); return r.json(); })
-      .then(setGithub).catch(() => setGithubError(true));
+    let active = true;
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+
+    // Show the last successful response immediately while the live API refreshes.
+    try {
+      const saved = window.localStorage.getItem('portfolio-github-cache');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.stats && Array.isArray(parsed.repos)) setGithub(parsed);
+      }
+    } catch {
+      // Storage can be unavailable in private browsing; live data still works.
+    }
+
+    fetch('/api/github', { signal: controller.signal, headers: { Accept: 'application/json' } })
+      .then(response => {
+        if (!response.ok) throw new Error('GitHub data unavailable');
+        return response.json();
+      })
+      .then(data => {
+        if (!active) return;
+        setGithub(data);
+        setGithubError(false);
+        try { window.localStorage.setItem('portfolio-github-cache', JSON.stringify(data)); } catch {}
+      })
+      .catch(() => {
+        if (active) setGithubError(true);
+      })
+      .finally(() => window.clearTimeout(timeoutId));
+
+    return () => {
+      active = false;
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const nav = [['Work', '#work'], ['About', '#about'], ['Lab', '#lab'], ['Contact', '#contact']];
   const sortValues = () => { setValues(v => [...v].sort((a, b) => a - b)); setSorted(true); };
   const resetValues = () => { setValues([8, 3, 11, 5, 2, 9, 6]); setSorted(false); };
-  const shuffled = useMemo(() => values, [values]);
+  const shuffled = values;
 
   return <div className="app-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
@@ -118,7 +152,7 @@ function App() {
         <div className="section-heading"><div><span className="section-kicker">03 / INTERACTIVE LAB</span><h2>Let's make concepts <span className="gradient-text">visible.</span></h2></div><span className="lab-caption">Tiny demos · Real fundamentals</span></div>
         <div className="lab-grid">
           <div className="lab-card"><div className="lab-card-head"><div className="lab-icon"><Code2 size={18}/></div><span>DSA / SORTING</span><span className="lab-live">INTERACTIVE</span></div><h3>Bubble into order.</h3><p>Visualize a simple sorting pass. Press sort to arrange the values from smallest to largest.</p><div className="bars" aria-label="Array visualization">{shuffled.map((n, i) => <div className="bar-wrap" key={i}><div className={sorted ? 'bar bar-sorted' : 'bar'} style={{height: (n * 7) + 10 + 'px'}}/><small>{n}</small></div>)}</div><div className="lab-controls"><button onClick={sortValues}><Play size={13}/> Sort values</button><button className="reset-btn" onClick={resetValues}><RotateCcw size={13}/> Reset</button></div><div className="complexity"><span>TIME COMPLEXITY <b>O(n²)</b></span><span>SPACE <b>O(1)</b></span></div></div>
-          <div className="lab-card network-card"><div className="lab-card-head"><div className="lab-icon"><Network size={18}/></div><span>NETWORKING / TCP-IP</span><span className="lab-live">SIMULATION</span></div><h3>How a request travels.</h3><p>Follow a packet from your browser to a server through a simplified network path.</p><div className={packets ? 'network-flow flow-active' : 'network-flow'}><div className="network-node"><span><Terminal size={17}/></span><small>CLIENT</small></div><div className="network-link"><i/></div><div className="network-node"><span><Network size={17}/></span><small>ROUTER</small></div><div className="network-link"><i/></div><div className="network-node"><span><Layers3 size={17}/></span><small>SERVER</small></div></div><div className="packet-caption">{packets ? 'Packet delivered · HTTP response received' : 'Ready to send a request'}</div><div className="lab-controls"><button onClick={() => {setPackets(false); setTimeout(() => setPackets(true), 80);}}><Play size={13}/> Send packet</button><button className="reset-btn" onClick={() => setPackets(false)}><RotateCcw size={13}/> Reset</button></div><div className="complexity"><span>PROTOCOL <b>TCP/IP</b></span><span>APP LAYER <b>HTTP</b></span></div></div>
+          <div className="lab-card network-card"><div className="lab-card-head"><div className="lab-icon"><Network size={18}/></div><span>NETWORKING / TCP-IP</span><span className="lab-live">SIMULATION</span></div><h3>How a request travels.</h3><p>Follow a packet from your browser to a server through a simplified network path.</p><div className={packets ? 'network-flow flow-active' : 'network-flow'}><div className="network-node"><span><Terminal size={17}/></span><small>CLIENT</small></div><div className="network-link"><i/></div><div className="network-node"><span><Network size={17}/></span><small>ROUTER</small></div><div className="network-link"><i/></div><div className="network-node"><span><Layers3 size={17}/></span><small>SERVER</small></div></div><div className="packet-caption">{packets ? 'Packet delivered · HTTP response received' : 'Ready to send a request'}</div><div className="lab-controls"><button onClick={() => setPackets(false) || requestAnimationFrame(() => setPackets(true))><Play size={13}/> Send packet</button><button className="reset-btn" onClick={() => setPackets(false)}><RotateCcw size={13}/> Reset</button></div><div className="complexity"><span>PROTOCOL <b>TCP/IP</b></span><span>APP LAYER <b>HTTP</b></span></div></div>
         </div>
       </section>
 
