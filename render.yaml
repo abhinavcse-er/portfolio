@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: abhinav-portfolio
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GITHUB_USERNAME
+        value: abhinavcse-er
