@@ -46,6 +46,7 @@ function App() {
         return response.json();
       })
       .then(data => {
+        if (data.unavailable) throw new Error('GitHub data temporarily unavailable');
         if (!active) return;
         setGithub(data);
         setGithubError(false);
