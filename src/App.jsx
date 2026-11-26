@@ -573,6 +573,7 @@ function App() {
             ['projects','Projects','Real repositories and live applications',Layers3],
             ['dsa','DSA Arcade','Interactive algorithms and data structures',Binary],
             ['network','Network Lab','TCP, DNS, OSI and subnetting',Network],
+            ['terminal','Terminal','Explore the portfolio command line',SquareTerminal],
             ['quest','Know Me Quiz','A quick interactive introduction',CircleHelp],
             ['contact','Contact','Internships, feedback and collaboration',Mail]
           ].map(([id,label,description,Icon]) => <button className="landing-nav-card" key={id} onClick={() => openApp(id)}><span className="landing-nav-icon"><Icon size={19}/></span><span><b>{label}</b><small>{description}</small></span><ArrowUpRight size={16}/></button>)}
