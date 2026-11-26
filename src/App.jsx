@@ -560,10 +560,10 @@ function App() {
         </div>
       </section>
       <section className="landing-metrics">
-        <div><strong>{github?.stats?.repositories ?? '—'}</strong><span>Public projects</span></div>
-        <div><strong>{github?.stats?.stars ?? '—'}</strong><span>GitHub stars</span></div>
-        <div><strong>{github?.stats?.followers ?? '—'}</strong><span>Followers</span></div>
-        <div><strong>{github?.stats?.languages ?? '—'}</strong><span>Languages</span></div>
+        <div><strong>{github?.stats?.repositories ?? FALLBACK_PROJECTS.length}</strong><span>Public projects</span></div>
+        <div><strong>{github?.stats?.stars ?? 0}</strong><span>GitHub stars</span></div>
+        <div><strong>{github?.stats?.followers ?? 0}</strong><span>Followers</span></div>
+        <div><strong>{github?.stats?.languages ?? new Set(FALLBACK_PROJECTS.map(project => project.language).filter(Boolean)).size}</strong><span>Languages</span></div>
       </section>
       <section className="landing-section">
         <div className="section-title-row"><div><span className="eyebrow">EXPLORE THE PORTFOLIO</span><h3>Choose where to start</h3></div><span className="muted-note">Every section has its own page</span></div>
@@ -791,7 +791,7 @@ function App() {
 
   return (
     <div className="os-shell">
-      <header className="os-menubar site-header">
+      <header className={"os-menubar site-header " + (mobileMenu ? "menu-open" : "")}>
         <button className="os-brand" onClick={() => openApp('home')}><span className="brand-symbol">A<span>.</span></span><b>ABHINAV<span>.DEV</span></b></button>
         <nav className="site-nav" aria-label="Main navigation">
           { [['home','Home'],['profile','About'],['projects','Projects'],['dsa','DSA Lab'],['network','Network'],['contact','Contact']].map(([id,label]) => <button key={id} className={activeApp === id ? 'nav-active' : ''} onClick={() => openApp(id)}>{label}</button>) }
