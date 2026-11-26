@@ -46,11 +46,11 @@ async function refreshGithubData() {
     const featuredNames = [
       'antigravity-projects',
       'neurox-ai',
-      'phishing-backend',
       'Url-based-phishing-detection-system',
       'RideYou',
+      'itzfizz-scroll-hero',
       'digiedu-hub',
-      'itzfizz-scroll-hero'
+      'phishing-backend'
     ];
     const byName = new Map(projectRepos.map(repo => [repo.name.toLowerCase(), repo]));
     const featured = featuredNames.map(name => byName.get(name.toLowerCase())).filter(Boolean);
