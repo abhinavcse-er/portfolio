@@ -12,13 +12,77 @@ const LINKEDIN = 'https://www.linkedin.com/in/abhinav-kumar-mishra-29919a363/';
 const EMAIL = 'erabhinavkumarmishra@gmail.com';
 
 const FALLBACK_PROJECTS = [
-  { name: 'NeuroX AI', description: 'An AI assistant experience with a conversational interface and connected knowledge sources.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/neurox-ai', stargazers_count: 0 },
-  { name: 'Phishing Detection API', description: 'A machine-learning powered phishing URL analysis API and detection workflow.', language: 'Python', html_url: 'https://github.com/' + USER + '/phishing-backend', stargazers_count: 0 },
-  { name: 'DigiEduHub', description: 'A student-focused education hub for organizing semester learning resources.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/digiedu-hub', stargazers_count: 0 },
-  { name: 'Sugarcane Digital Khata', description: 'A digital ledger concept for sugarcane farmers, deliveries, expenses and payment tracking.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/Sugarcane-Digital-Khata', stargazers_count: 0 },
-  { name: 'RideYou', description: 'A vehicle booking platform concept connecting customers, mediators and vehicle owners.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/RideYou', stargazers_count: 0 },
-  { name: 'URL Phishing Detection', description: 'A URL-focused phishing detection project exploring features and classification.', language: 'Python', html_url: 'https://github.com/' + USER + '/Url-based-phishing-detection-system', stargazers_count: 0 }
+  { name: 'neurox-ai', description: 'Full-stack AI workspace for everyday questions, coding, study and defensive cybersecurity learning.', language: 'CSS', html_url: 'https://github.com/' + USER + '/neurox-ai', stargazers_count: 0 },
+  { name: 'Url-based-phishing-detection-system', description: 'PhishGuard: explainable URL risk heuristics with an experimental ML model held behind an external-validation gate.', language: 'Python', html_url: 'https://github.com/' + USER + '/Url-based-phishing-detection-system', stargazers_count: 0 },
+  { name: 'phishing-backend', description: 'Python API for URL analysis using extracted URL features and a trained classifier.', language: 'Python', html_url: 'https://github.com/' + USER + '/phishing-backend', stargazers_count: 0 },
+  { name: 'RideYou', description: 'Mobile-first Bihar ride-booking demo with customer booking, fare review and driver assignment workflows.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/RideYou', stargazers_count: 0 },
+  { name: 'digiedu-hub', description: 'Multi-page learning resource hub for diploma students, with branch and semester learning material.', language: 'HTML', html_url: 'https://github.com/' + USER + '/digiedu-hub', stargazers_count: 0 },
+  { name: 'itzfizz-scroll-hero', description: 'Responsive scroll-driven hero experience using GSAP and ScrollTrigger.', language: 'CSS', html_url: 'https://github.com/' + USER + '/itzfizz-scroll-hero', stargazers_count: 0 }
 ];
+
+const PROJECT_DETAILS = {
+  'neurox-ai': {
+    title: 'NeuroX AI',
+    category: 'AI product',
+    description: 'A full-stack AI workspace for everyday questions, coding, study support and defensive cybersecurity learning.',
+    details: 'The frontend includes Firebase sign-in, conversation history and a multi-mode chat experience. Its Node.js backend routes provider requests, streams responses and keeps provider secrets server-side, with a Wikipedia fallback for selected general lookups.',
+    stack: ['JavaScript', 'Node.js', 'Express', 'Firebase Auth', 'SSE', 'Netlify', 'Render'],
+    live: 'https://neuroaii.netlify.app/',
+    note: 'Live web app'
+  },
+  'phishing-backend': {
+    title: 'Phishing Classifier API',
+    category: 'Backend · Security',
+    description: 'A Python API for analysing suspicious URLs using structural features and a trained classification model.',
+    details: 'The repository contains a FastAPI server, feature extraction logic, a training script and a saved model artifact. It is separate from the newer PhishGuard research project.',
+    stack: ['Python', 'FastAPI', 'scikit-learn', 'URL analysis'],
+    note: 'Backend API repository'
+  },
+  'url-based-phishing-detection-system': {
+    title: 'PhishGuard',
+    category: 'Security research',
+    description: 'An explainable URL-analysis project that scores suspicious URL structure without visiting the submitted website.',
+    details: 'The live scanning path uses transparent URL heuristics. The experimental ML v4 candidate is intentionally not enabled: the repository documents a failed independent external-validation release gate. That limitation is stated rather than presenting the model as production-ready.',
+    stack: ['Python', 'FastAPI', 'URL features', 'Model evaluation', 'HTML/CSS/JS'],
+    note: 'ML inference gated · heuristics active'
+  },
+  'rideyou': {
+    title: 'RideYou',
+    category: 'Product prototype',
+    description: 'A mobile-first ride-booking prototype designed around the needs of customers and vehicle operators in Bihar.',
+    details: 'The demo covers customer booking and lookup, manual fare quotation, admin review, driver assignment and trip status. Its GitHub Pages build stores demo bookings in the current browser only; secure multi-user bookings require the planned backend and database work.',
+    stack: ['JavaScript', 'React', 'Vite', 'Supabase schema', 'GitHub Pages'],
+    note: 'Frontend demo · local-only booking state'
+  },
+  'digiedu-hub': {
+    title: 'DigiEdu Hub',
+    category: 'Education',
+    description: 'A multi-page e-learning resource hub built for diploma students, with branch and semester learning material.',
+    details: 'The repository includes student-facing course pages and a semester dashboard linking Computer Science, Mechanical and Civil learning resources, notes and practice material.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'Student resources'],
+    note: 'Education resource project'
+  },
+  'itzfizz-scroll-hero': {
+    title: 'ITZFIZZ · Scroll Hero',
+    category: 'Frontend experience',
+    description: 'A responsive, scroll-driven hero experience focused on typography, motion and visual storytelling.',
+    details: 'A sports-car visual responds to scroll position using GSAP and ScrollTrigger. The project also includes a reveal sequence, progress indicator, motion trail and responsive layouts.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger'],
+    note: 'Frontend motion study'
+  }
+};
+
+function getProjectPresentation(project) {
+  const key = String(project?.name || '').toLowerCase();
+  return PROJECT_DETAILS[key] || {
+    title: String(project?.name || 'Untitled project').replaceAll('-', ' '),
+    category: project?.language || 'GitHub project',
+    description: project?.description || 'Explore the source repository for implementation details.',
+    details: 'This repository is part of the public project index pulled directly from GitHub.',
+    stack: [project?.language].filter(Boolean),
+    note: project?.archived ? 'Archived repository' : 'GitHub repository'
+  };
+}
 
 const APPS = [
   { id: 'profile', label: 'My Profile', sub: 'Who is Abhinav?', icon: UserRound, color: 'violet' },
@@ -258,6 +322,9 @@ const NETWORK_FLOWS = {
 function App() {
   const [github, setGithub] = useState(null);
   const [githubError, setGithubError] = useState(false);
+  const [projectQuery, setProjectQuery] = useState('');
+  const [projectFilter, setProjectFilter] = useState('All');
+  const [projectSort, setProjectSort] = useState('recent');
   const [activeApp, setActiveApp] = useState('home');
   const [mobileMenu, setMobileMenu] = useState(false);
   const [clock, setClock] = useState(new Date());
@@ -295,7 +362,7 @@ function App() {
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 8000);
     try {
-      const saved = window.localStorage.getItem('portfolio-github-cache');
+      const saved = window.localStorage.getItem('portfolio-github-cache-v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.stats && Array.isArray(parsed.repos)) setGithub(parsed);
@@ -325,6 +392,18 @@ function App() {
   }, []);
 
   const projects = github?.repos?.length ? github.repos : FALLBACK_PROJECTS;
+  const featuredProjects = github?.featured?.length ? github.featured : projects.slice(0, 3);
+  const visibleProjects = projects
+    .filter(project => {
+      const info = getProjectPresentation(project);
+      const query = projectQuery.trim().toLowerCase();
+      const matchesQuery = !query || [info.title, info.description, info.category, project.language, ...(info.stack || [])].join(' ').toLowerCase().includes(query);
+      const matchesFilter = projectFilter === 'All' || info.category.toLowerCase().includes(projectFilter.toLowerCase());
+      return matchesQuery && matchesFilter;
+    })
+    .sort((a, b) => projectSort === 'stars'
+      ? (b.stargazers_count || 0) - (a.stargazers_count || 0)
+      : new Date(b.pushed_at || b.updated_at || 0) - new Date(a.pushed_at || a.updated_at || 0));
   const sortFrames = useMemo(() => createSortFrames(numbers, sortMode), [numbers, sortMode]);
   const currentSort = sortFrames[Math.min(sortStep, sortFrames.length - 1)];
   const sortedSearchValues = [3, 7, 11, 14, 18, 22, 27, 31, 36, 42];
