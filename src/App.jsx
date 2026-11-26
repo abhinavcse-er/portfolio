@@ -380,7 +380,7 @@ function App() {
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 8000);
     try {
-      const saved = window.localStorage.getItem('portfolio-github-cache-v2');
+      const saved = window.localStorage.getItem('portfolio-github-cache-v3');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.stats && Array.isArray(parsed.repos)) setGithub(parsed);
@@ -398,7 +398,7 @@ function App() {
         if (!active) return;
         setGithub(data);
         setGithubError(false);
-        try { window.localStorage.setItem('portfolio-github-cache-v2', JSON.stringify(data)); } catch {}
+        try { window.localStorage.setItem('portfolio-github-cache-v3', JSON.stringify(data)); } catch {}
       })
       .catch(() => { if (active) setGithubError(true); })
       .finally(() => window.clearTimeout(timeoutId));
@@ -417,7 +417,7 @@ function App() {
       const info = getProjectPresentation(project);
       const query = projectQuery.trim().toLowerCase();
       const matchesQuery = !query || [info.title, info.description, info.category, project.language, ...(info.stack || [])].join(' ').toLowerCase().includes(query);
-      const matchesFilter = projectFilter === 'All' || (projectFilter === 'Live' ? Boolean(info.live) : info.category.toLowerCase().includes(projectFilter.toLowerCase()));
+      const matchesFilter = projectFilter === 'All' || (projectFilter === 'Live apps' ? Boolean(info.live) : info.category.toLowerCase().includes(projectFilter.toLowerCase()));
       return matchesQuery && matchesFilter;
     })
     .sort((a, b) => projectSort === 'stars'
@@ -643,7 +643,7 @@ function App() {
         <label className="project-sort"><span>SORT</span><select value={projectSort} onChange={e => setProjectSort(e.target.value)} aria-label="Sort projects"><option value="recent">Recently updated</option><option value="stars">Most stars</option></select></label>
       </div>
       <div className="project-filter-row" aria-label="Filter projects">
-        {['All', 'Live', 'AI', 'Security', 'Education', 'Product', 'Frontend'].map(filter => <button key={filter} className={projectFilter === filter ? 'filter-active' : ''} onClick={() => setProjectFilter(filter)}>{filter}</button>)}
+        {['All', 'Live apps', 'AI', 'Security', 'Education', 'Product', 'Frontend'].map(filter => <button key={filter} className={projectFilter === filter ? 'filter-active' : ''} onClick={() => setProjectFilter(filter)}>{filter}</button>)}
       </div>
       <div className="project-results-head"><span>SHOWING {visibleProjects.length} OF {projects.length} REPOSITORIES</span><span>UPDATED FROM GITHUB</span></div>
       <div className="repo-grid project-catalogue">
