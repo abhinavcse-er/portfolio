@@ -355,6 +355,7 @@ function App() {
   const [terminalOutput, setTerminalOutput] = useState(['ABHINAV.OS shell v1.0', 'Type help to explore the available commands.']);
   const [numbers, setNumbers] = useState([8, 3, 11, 5, 2, 9, 6, 4]);
   const [sortMode, setSortMode] = useState('bubble');
+  const [activePlayground, setActivePlayground] = useState('sorting');
   const [sortStep, setSortStep] = useState(0);
   const [searchTarget, setSearchTarget] = useState('22');
   const [searchMode, setSearchMode] = useState('binary');
@@ -665,9 +666,9 @@ function App() {
     const renderDsa = () => (
     <div className="app-content">
       <div className="app-hero"><div><span className="eyebrow">LEARNING ARCADE / 003</span><h2>Make algorithms <em>click.</em></h2><p>Play with the data. Step through the logic. See the complexity.</p></div><span className="arcade-badge"><Zap size={15}/> INTERACTIVE</span></div>
-      <div className="dsa-tabs"><span className="active">SORTING</span><span>SEARCHING</span><span>LINEAR STRUCTURES</span><span>GRAPHS</span></div>
-      <div className="lab-grid-os">
-        <section className="lab-module sort-module">
+      <div className="playground-nav" aria-label="Choose a DSA playground">{[{id:"sorting",label:"Sorting",hint:"5 algorithms"},{id:"searching",label:"Searching",hint:"2 methods"},{id:"structures",label:"Stack & Queue",hint:"LIFO / FIFO"},{id:"linked-list",label:"Linked List",hint:"Node operations"},{id:"trees",label:"Trees",hint:"3 traversals"},{id:"graphs",label:"Graphs",hint:"BFS / DFS"}].map(item => <button key={item.id} className={activePlayground===item.id?"playground-active":""} onClick={()=>setActivePlayground(item.id)}><b>{item.label}</b><small>{item.hint}</small></button>)}</div>
+      <div className="playground-content">
+        {activePlayground === "sorting" && <section className="lab-module sort-module">
           <div className="module-top"><div className="module-icon purple"><Binary size={17}/></div><div><span className="card-kicker">ARRAYS · SORTING</span><h3>Sorting visualizer</h3></div><span className="module-number">01</span></div>
           <p className="module-description">Watch how an algorithm compares and moves values into ascending order.</p>
           <div className="control-row"><label htmlFor="sort-mode">Algorithm</label><select id="sort-mode" value={sortMode} onChange={e => changeSort(e.target.value)}><option value="bubble">Bubble sort</option><option value="selection">Selection sort</option><option value="insertion">Insertion sort</option><option value="quick">Quick sort</option><option value="merge">Merge sort</option></select></div>
@@ -675,9 +676,9 @@ function App() {
           <div className="step-caption"><span>STEP {sortStep} / {sortFrames.length - 1}</span>{currentSort.note}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => setSortStep(step => Math.min(step + 1, sortFrames.length - 1))} disabled={sortStep >= sortFrames.length - 1}><Play size={13}/> Next step</button><button onClick={() => setSortStep(sortFrames.length - 1)}>Run all</button><button onClick={resetSort}><RotateCcw size={13}/> Reset</button><button onClick={shuffleSort}>Shuffle</button></div>
           <div className="complexity-row"><span>Bubble <b>O(n²)</b></span><span>Selection <b>O(n²)</b></span><span>Insertion <b>O(n²)</b></span><span>Quick avg <b>O(n log n)</b></span><span>Merge <b>O(n log n)</b></span></div>
-        </section>
+        </section>}
 
-        <section className="lab-module search-module">
+        {activePlayground === "searching" && <section className="lab-module search-module">
           <div className="module-top"><div className="module-icon blue"><Search size={17}/></div><div><span className="card-kicker">ARRAYS · SEARCHING</span><h3>Find the target</h3></div><span className="module-number">02</span></div>
           <p className="module-description">Compare linear search with binary search on a sorted array.</p>
           <div className="control-row"><label htmlFor="search-mode">Method</label><select id="search-mode" value={searchMode} onChange={e => changeSearch(e.target.value)}><option value="binary">Binary search</option><option value="linear">Linear search</option></select></div>
@@ -686,9 +687,9 @@ function App() {
           <div className="step-caption"><span>STEP {searchStep} / {searchFrames.length - 1}</span>{currentSearch.note}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => setSearchStep(step => Math.min(step + 1, searchFrames.length - 1))} disabled={searchStep >= searchFrames.length - 1}><Play size={13}/> Next check</button><button onClick={() => setSearchStep(0)}><RotateCcw size={13}/> Reset</button></div>
           <div className="complexity-row"><span>Linear <b>O(n)</b></span><span>Binary <b>O(log n)</b></span><span>Sorted input required for binary</span></div>
-        </section>
+        </section>}
 
-        <section className="lab-module structures-module">
+        {activePlayground === "structures" && <section className="lab-module structures-module">
           <div className="module-top"><div className="module-icon green"><Layers3 size={17}/></div><div><span className="card-kicker">LINEAR DATA STRUCTURES</span><h3>Stack & queue playground</h3></div><span className="module-number">03</span></div>
           <p className="module-description">Try LIFO and FIFO operations. Add a value, then remove one.</p>
           <div className="structure-input"><input aria-label="Value to add" type="number" value={structureInput} onChange={e => setStructureInput(e.target.value)}/><span>VALUE</span></div>
@@ -696,29 +697,35 @@ function App() {
             <div className="structure-box"><div className="structure-title"><b>STACK</b><span>LIFO</span></div><div className="stack-visual">{stack.length ? stack.map((n, i) => <div key={i} className={'stack-item ' + (i === stack.length - 1 ? 'stack-top' : '')}>{n}{i === stack.length - 1 && <small>TOP</small>}</div>) : <span className="empty-state">Empty stack</span>}</div><div className="structure-buttons"><button onClick={() => structureAction('push')}>Push</button><button onClick={() => structureAction('pop')} disabled={!stack.length}>Pop</button></div></div>
             <div className="structure-box"><div className="structure-title"><b>QUEUE</b><span>FIFO</span></div><div className="queue-visual">{queue.length ? queue.map((n, i) => <div key={i} className={'queue-item ' + (i === 0 ? 'queue-front' : '')}>{n}</div>) : <span className="empty-state">Empty queue</span>}</div><div className="structure-buttons"><button onClick={() => structureAction('enqueue')}>Enqueue</button><button onClick={() => structureAction('dequeue')} disabled={!queue.length}>Dequeue</button></div></div>
           </div>
-        </section>
+        </section>}
 
-        <section className="lab-module graph-module">
+        {activePlayground === "graphs" && <section className="lab-module graph-module">
           <div className="module-top"><div className="module-icon orange"><Network size={17}/></div><div><span className="card-kicker">GRAPHS · TRAVERSAL</span><h3>Explore a graph</h3></div><span className="module-number">04</span></div>
           <p className="module-description">See how BFS uses a queue and DFS uses a stack to visit connected nodes.</p>
           <div className="control-row"><label htmlFor="traversal-mode">Traversal</label><select id="traversal-mode" value={traversalMode} onChange={e => changeTraversal(e.target.value)}><option value="bfs">Breadth-first search (BFS)</option><option value="dfs">Depth-first search (DFS)</option></select></div>
           <div className="graph-visual">{[['A', 50, 13], ['B', 24, 42], ['C', 76, 42], ['D', 9, 82], ['E', 39, 82], ['F', 86, 82]].map(([node, x, y]) => <div key={node} className={'graph-node ' + (currentTraversal.current === node ? 'node-current' : currentTraversal.order.includes(node) ? 'node-visited' : '')} style={{ left: x + '%', top: y + '%' }}>{node}</div>)}<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M50 16 L25 44 M50 16 L75 44 M25 44 L10 84 M25 44 L40 84 M75 44 L86 84 M40 84 L86 84"/></svg></div>
+          <div className="graph-learning-grid">
+            <article><span className="card-kicker">METHOD 01 · ADJACENCY LIST</span><h4>Who is connected?</h4><p>Each node stores the neighbours it can directly reach.</p><pre>{"A: B, C\nB: A, D, E\nC: A, F\nD: B\nE: B, F\nF: C, E"}</pre></article>
+            <article><span className="card-kicker">METHOD 02 · ADJACENCY MATRIX</span><h4>Connection table</h4><p>1 means an edge exists; 0 means no direct edge.</p><div className="matrix-wrap"><table className="adjacency-matrix"><thead><tr><th></th>{['A','B','C','D','E','F'].map(n=><th key={n}>{n}</th>)}</tr></thead><tbody>{[['A',0,1,1,0,0,0],['B',1,0,0,1,1,0],['C',1,0,0,0,0,1],['D',0,1,0,0,0,0],['E',0,1,0,0,0,1],['F',0,0,1,0,1,0]].map(row=><tr key={row[0]}>{row.map((v,i)=>i===0?<th key={i}>{v}</th>:<td key={i} className={v?"matrix-one":""}>{v}</td>)}</tr>)}</tbody></table></div></article>
+            <article><span className="card-kicker">METHOD 03 · REAL-LIFE MODEL</span><h4>Think of city roads</h4><p>Nodes are places and edges are direct roads. BFS checks nearby places first; DFS follows one route deeply, then backtracks.</p><div className="graph-analogy"><b>Starting point: A</b><span>Nearby: B, C</span><span>Next reachable: D, E, F</span></div></article>
+            <article><span className="card-kicker">METHOD 04 · DATA STRUCTURE TRACE</span><h4>{traversalMode === 'bfs' ? 'Queue (FIFO)' : 'Stack (LIFO)'}</h4><p>{traversalMode === 'bfs' ? 'BFS removes the oldest discovered node first.' : 'DFS explores the most recently discovered path first.'}</p><div className="trace-pills"><span>Visited: {currentTraversal.order.join(' → ') || '—'}</span><span>{traversalMode === 'bfs' ? 'Queue' : 'Stack'}: {currentTraversal.frontier.join(' · ') || 'empty'}</span></div></article>
+          </div>
           <div className="traversal-order"><span>VISIT ORDER</span><b>{currentTraversal.order.length ? currentTraversal.order.join(' → ') : '—'}</b><small>Frontier: {currentTraversal.frontier.join(', ') || 'empty'}</small></div>
           <div className="step-caption"><span>STEP {traversalStep} / {traversalFrames.length - 1}</span>{currentTraversal.note}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => setTraversalStep(step => Math.min(step + 1, traversalFrames.length - 1))} disabled={traversalStep >= traversalFrames.length - 1}><Play size={13}/> Next visit</button><button onClick={() => setTraversalStep(0)}><RotateCcw size={13}/> Reset</button></div>
           <div className="complexity-row"><span>BFS <b>O(V + E)</b></span><span>DFS <b>O(V + E)</b></span></div>
-        </section>
+        </section>}
 
-        <section className="lab-module linked-list-module">
+        {activePlayground === "linked-list" && <section className="lab-module linked-list-module">
           <div className="module-top"><div className="module-icon cyan"><Layers3 size={17}/></div><div><span className="card-kicker">LINKED LIST</span><h3>Build a linked list</h3></div><span className="module-number">05</span></div>
           <p className="module-description">Add or remove nodes at either end. Each node stores data and points to the next node.</p>
           <div className="structure-input"><input aria-label="Linked list value" type="number" value={structureInput} onChange={e => setStructureInput(e.target.value)}/><span>NODE VALUE</span></div>
           <div className="linked-list-visual">{linkedList.length ? linkedList.map((value, index) => <div className="linked-node-wrap" key={index}><div className="linked-node"><b>{value}</b><small>{index === 0 ? 'HEAD' : 'NODE'}</small></div>{index < linkedList.length - 1 && <ArrowRight size={14}/>}</div>) : <span className="empty-state">Head → null (empty list)</span>}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => listAction('head')}>Insert head</button><button onClick={() => listAction('tail')}>Insert tail</button><button onClick={() => listAction('remove-head')} disabled={!linkedList.length}>Delete head</button><button onClick={() => listAction('remove-tail')} disabled={!linkedList.length}>Delete tail</button></div>
           <div className="complexity-row"><span>Head insert <b>O(1)</b></span><span>Tail traversal <b>O(n)</b></span><span>Extra pointer per node</span></div>
-        </section>
+        </section>}
 
-        <section className="lab-module tree-module">
+        {activePlayground === "trees" && <section className="lab-module tree-module">
           <div className="module-top"><div className="module-icon orange"><Binary size={17}/></div><div><span className="card-kicker">TREES · BST</span><h3>Tree traversal</h3></div><span className="module-number">06</span></div>
           <p className="module-description">Visit the same Binary Search Tree in three different orders.</p>
           <div className="control-row"><label htmlFor="tree-mode">Traversal</label><select id="tree-mode" value={treeMode} onChange={e => { setTreeMode(e.target.value); setTreeStep(0); }}><option value="inorder">Inorder (LNR)</option><option value="preorder">Preorder (NLR)</option><option value="postorder">Postorder (LRN)</option></select></div>
@@ -731,9 +738,9 @@ function App() {
           <div className="traversal-order"><span>VISIT ORDER</span><b>{currentTree.visited.join(' → ') || '—'}</b></div>
           <div className="module-actions"><button className="module-primary" onClick={() => setTreeStep(step => Math.min(step + 1, treeFrames.length - 1))} disabled={treeStep >= treeFrames.length - 1}><Play size={13}/> Next node</button><button onClick={() => setTreeStep(0)}><RotateCcw size={13}/> Reset</button></div>
           <div className="complexity-row"><span>Traversal <b>O(n)</b></span><span>BST search avg <b>O(log n)</b></span></div>
-        </section>
+        </section>}
       </div>
-      <div className="concept-strip"><div><BookOpen size={16}/><b>What you're practising</b></div><p>Arrays · comparisons · swaps · sorted order · binary search · LIFO · FIFO · graph traversal · queue · stack · Big-O time complexity.</p></div>
+      <div className="concept-strip"><div><BookOpen size={16}/><b>Learn one topic at a time</b></div><p>Choose a playground above. Each topic has its own explanation, controls, worked example and complexity notes. Switch topics whenever you are ready.</p></div>
     </div>
   );
 
