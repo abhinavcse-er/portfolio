@@ -337,13 +337,18 @@ const NETWORK_FLOWS = {
   }
 };
 
+function getRouteFromHash() {
+  const route = window.location.hash.replace(/^#\/?/, '').split('/')[0];
+  return ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact'].includes(route) ? route : 'home';
+}
+
 function App() {
   const [github, setGithub] = useState(null);
   const [githubError, setGithubError] = useState(false);
   const [projectQuery, setProjectQuery] = useState('');
   const [projectFilter, setProjectFilter] = useState('All');
   const [projectSort, setProjectSort] = useState('recent');
-  const [activeApp, setActiveApp] = useState('home');
+  const [activeApp, setActiveApp] = useState(getRouteFromHash);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [clock, setClock] = useState(new Date());
   const [terminalInput, setTerminalInput] = useState('');
@@ -369,6 +374,17 @@ function App() {
   const [quizScore, setQuizScore] = useState(0);
   const [quizChoice, setQuizChoice] = useState(null);
   const [quizDone, setQuizDone] = useState(false);
+
+  useEffect(() => {
+    const syncRoute = () => setActiveApp(getRouteFromHash());
+    window.addEventListener('hashchange', syncRoute);
+    window.addEventListener('popstate', syncRoute);
+    if (!window.location.hash) window.history.replaceState(null, '', '#/home');
+    return () => {
+      window.removeEventListener('hashchange', syncRoute);
+      window.removeEventListener('popstate', syncRoute);
+    };
+  }, []);
 
   useEffect(() => {
     const tick = window.setInterval(() => setClock(new Date()), 30000);
@@ -438,8 +454,11 @@ function App() {
   const currentQuiz = QUIZ[quizIndex];
 
   const openApp = id => {
-    setActiveApp(id);
+    const next = ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact'].includes(id) ? id : 'home';
+    if (getRouteFromHash() !== next) window.history.pushState(null, '', '#/' + next);
+    setActiveApp(next);
     setMobileMenu(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const resetSort = () => {
     setNumbers([8, 3, 11, 5, 2, 9, 6, 4]);
@@ -522,79 +541,48 @@ function App() {
   const timeLabel = clock.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
   const renderHome = () => (
-    <div className="home-screen">
-      <section className="home-hero">
-        <div className="home-hero-copy">
+    <div className="landing-page">
+      <section className="landing-hero">
+        <div className="landing-copy">
           <span className="micro-label"><Sparkles size={13}/> SOFTWARE ENGINEERING · SYSTEMS · CURIOSITY</span>
-          <h2>Building useful things.<br/><em>Understanding how they work.</em></h2>
-          <p>I'm Abhinav Kumar Mishra — a B.Tech CSE (Cybersecurity) student who enjoys creating products, solving engineering problems and exploring the systems behind the screen.</p>
+          <p className="landing-overline">HELLO, I'M ABHINAV KUMAR MISHRA</p>
+          <h2>I build useful digital products<span>.</span></h2>
+          <p className="landing-description">A software-focused developer exploring full-stack engineering, AI, data structures and computer networks — learning by building real projects.</p>
           <div className="welcome-actions">
-            <button className="primary-action" onClick={() => openApp('projects')}>Explore my work <ArrowRight size={15}/></button>
-            <button className="text-action" onClick={() => openApp('dsa')}>Try the DSA lab <Binary size={15}/></button>
+            <button className="primary-action" onClick={() => openApp('projects')}>Explore projects <ArrowRight size={15}/></button>
+            <button className="text-action" onClick={() => openApp('profile')}>About me <ArrowUpRight size={15}/></button>
           </div>
-          <div className="home-hero-meta"><span><i className="online-dot"/> OPEN TO INTERNSHIPS & COLLABORATION</span><span>BIHAR, INDIA</span></div>
+          <div className="landing-meta"><span><i className="online-dot"/> OPEN TO INTERNSHIPS & COLLABORATION</span><span>BIHAR, INDIA</span></div>
         </div>
-        <div className="home-profile-visual">
-          <div className="profile-glow"/>
-          {github?.profile?.avatar
-            ? <img className="profile-photo" src={github.profile.avatar} alt="GitHub profile avatar of Abhinav Kumar Mishra" />
-            : <div className="profile-photo profile-photo-fallback">A<span>.</span></div>}
-          <div className="profile-float-card">
-            <span className="profile-float-kicker">CURRENTLY LEARNING</span>
-            <b>DSA <i/> Computer Networks</b>
-            <small>Building a stronger systems foundation</small>
-          </div>
-          <div className="profile-handle"><Github size={13}/><span>@{github?.profile?.login || USER}</span><i/></div>
-        </div>
-        <div className="home-hero-bottom"><span><i className="online-dot"/> WORKSPACE ONLINE</span><span>BUILD · MEASURE · LEARN · REPEAT</span><span>ABHINAV.OS / 01</span></div>
-      </section>
-
-      <div className="home-stats">
-        <div className="mini-stat"><span><Github size={16}/></span><strong>{github?.stats?.repositories ?? '—'}</strong><small>Active project repositories</small></div>
-        <div className="mini-stat"><span><Star size={16}/></span><strong>{github?.stats?.stars ?? '—'}</strong><small>GitHub stars</small></div>
-        <div className="mini-stat"><span><UsersIcon/></span><strong>{github?.stats?.followers ?? '—'}</strong><small>GitHub followers</small></div>
-        <div className="mini-stat"><span><Code2 size={16}/></span><strong>{github?.stats?.languages ?? '—'}</strong><small>Primary languages</small></div>
-      </div>
-
-      <section className="home-featured">
-        <div className="section-title-row">
-          <div><span className="eyebrow">SELECTED WORK / GITHUB</span><h3>Projects with a purpose</h3></div>
-          <button className="inline-link" onClick={() => openApp('projects')}>All projects <ArrowRight size={14}/></button>
-        </div>
-        <div className="featured-grid">
-          {featuredProjects.slice(0, 3).map((project, index) => {
-            const info = getProjectPresentation(project);
-            return <article className="featured-card" key={project.id || project.name}>
-              <div className="featured-top"><span className="featured-index">0{index + 1}</span><span>{info.category}</span>{info.live && <span className="featured-live"><i/> LIVE</span>}</div>
-              <h4>{info.title}</h4><p>{info.description}</p>
-              <div className="featured-foot"><span>{project.language || info.stack?.[0] || 'Software'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span></div>
-              <div className="featured-actions">
-                {info.live && <a href={info.live} target="_blank" rel="noreferrer">{info.liveLabel || 'Open live app'} <ExternalLink size={12}/></a>}
-                <a className="featured-source" href={project.html_url} target="_blank" rel="noreferrer">Source <ArrowUpRight size={12}/></a>
-              </div>
-            </article>;
-          })}
+        <div className="landing-visual">
+          {github?.profile?.avatar ? <img src={github.profile.avatar} alt="Abhinav's GitHub avatar"/> : <div className="landing-avatar">A<span>.</span></div>}
+          <div className="landing-visual-caption"><span className="online-dot"/> BUILD · LEARN · SHIP</div>
         </div>
       </section>
-
-      <section className="home-apps">
-        <div className="section-title-row"><div><span className="eyebrow">THE WORKSPACE</span><h3>Explore the interactive apps</h3></div><span className="muted-note">Pick a tool to begin</span></div>
-        <div className="app-launch-grid">
-          {APPS.map(item => {
-            const Icon = item.icon;
-            return <button className="launch-tile" key={item.id} onClick={() => openApp(item.id)}>
-              <span className={'app-icon ' + item.color}><Icon size={20}/></span>
-              <span className="launch-title">{item.label}</span><small>{item.sub}</small><ChevronRight size={14} className="launch-chevron"/>
-            </button>;
-          })}
+      <section className="landing-metrics">
+        <div><strong>{github?.stats?.repositories ?? '—'}</strong><span>Public projects</span></div>
+        <div><strong>{github?.stats?.stars ?? '—'}</strong><span>GitHub stars</span></div>
+        <div><strong>{github?.stats?.followers ?? '—'}</strong><span>Followers</span></div>
+        <div><strong>{github?.stats?.languages ?? '—'}</strong><span>Languages</span></div>
+      </section>
+      <section className="landing-section">
+        <div className="section-title-row"><div><span className="eyebrow">EXPLORE THE PORTFOLIO</span><h3>Choose where to start</h3></div><span className="muted-note">Every section has its own page</span></div>
+        <div className="landing-nav-grid">
+          {[
+            ['profile','About','My background, interests and toolbox',UserRound],
+            ['projects','Projects','Real repositories and live applications',Layers3],
+            ['dsa','DSA Arcade','Interactive algorithms and data structures',Binary],
+            ['network','Network Lab','TCP, DNS, OSI and subnetting',Network],
+            ['quest','Know Me Quiz','A quick interactive introduction',CircleHelp],
+            ['contact','Contact','Internships, feedback and collaboration',Mail]
+          ].map(([id,label,description,Icon]) => <button className="landing-nav-card" key={id} onClick={() => openApp(id)}><span className="landing-nav-icon"><Icon size={19}/></span><span><b>{label}</b><small>{description}</small></span><ArrowUpRight size={16}/></button>)}
         </div>
       </section>
-
-      <div className="home-bottom-grid">
-        <div className="info-panel"><div className="panel-heading"><BookOpen size={16}/> THE DEVELOPER <span>PROFILE</span></div><p>Second-year B.Tech CSE (Cybersecurity). My primary interest is software engineering — building full-stack products while strengthening DSA, networking and security fundamentals.</p><button className="inline-link" onClick={() => openApp('profile')}>Read my story <ArrowRight size={14}/></button></div>
-        <div className="info-panel signal-panel"><div className="panel-heading"><Activity size={16}/> CURRENT FOCUS <span>IN PROGRESS</span></div><div className="focus-row"><span>01</span><div><b>Problem solving</b><small>Algorithms, data structures and clean code</small></div></div><div className="focus-row"><span>02</span><div><b>Systems engineering</b><small>Networks, APIs and defensive security</small></div></div></div>
-      </div>
-      <div className="home-data-note"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'GitHub data is temporarily unavailable; showing the saved project index.' : github?.updatedAt ? 'Project data synced from GitHub · ' + new Date(github.updatedAt).toLocaleString() : 'Connecting to GitHub project data…'}</div>
+      <section className="landing-bottom">
+        <div><span className="eyebrow">CURRENT FOCUS</span><h3>Strong fundamentals. Useful software.</h3><p>Building full-stack applications while improving problem solving, APIs, networking and defensive security fundamentals.</p></div>
+        <button className="primary-action" onClick={() => openApp('contact')}>Let's connect <ArrowRight size={15}/></button>
+      </section>
+      <div className="home-data-note"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'GitHub is temporarily unavailable. Showing the built-in project fallback.' : github?.updatedAt ? 'GitHub data synced · ' + new Date(github.updatedAt).toLocaleString() : 'Loading live GitHub statistics…'}</div>
     </div>
   );
 
@@ -803,30 +791,16 @@ function App() {
 
   return (
     <div className="os-shell">
-      <header className="os-menubar">
-        <button className="os-brand" onClick={() => openApp('home')}><span className="brand-symbol">A<span>.</span></span><b>ABHINAV<span>.OS</span></b></button>
-        <div className="menu-center"><span>PERSONAL WORKSPACE</span><i/> <span>V 1.0.26</span></div>
-        <div className="system-tray"><span className="tray-status"><i/> ONLINE</span><span><Wifi size={14}/></span><span><Signal size={14}/></span><span className="tray-time"><Clock3 size={13}/> {dateLabel} · {timeLabel}</span><button className="mobile-toggle" onClick={() => setMobileMenu(!mobileMenu)} aria-label="Open apps menu">{mobileMenu ? <X size={17}/> : <Menu size={17}/>}</button></div>
+      <header className="os-menubar site-header">
+        <button className="os-brand" onClick={() => openApp('home')}><span className="brand-symbol">A<span>.</span></span><b>ABHINAV<span>.DEV</span></b></button>
+        <nav className="site-nav" aria-label="Main navigation">
+          { [['home','Home'],['profile','About'],['projects','Projects'],['dsa','DSA Lab'],['network','Network'],['contact','Contact']].map(([id,label]) => <button key={id} className={activeApp === id ? 'nav-active' : ''} onClick={() => openApp(id)}>{label}</button>) }
+        </nav>
+        <div className="system-tray"><span className="tray-status"><i/> AVAILABLE</span><button className="mobile-toggle" onClick={() => setMobileMenu(!mobileMenu)} aria-label="Open navigation">{mobileMenu ? <X size={17}/> : <Menu size={17}/>}</button></div>
       </header>
 
       <main className="os-desktop">
-        <div className="desktop-heading">
-          <div><span className="desktop-kicker">WELCOME TO MY DIGITAL SPACE</span><h1>Explore. <span>Interact.</span> Discover.</h1><p>A developer portfolio disguised as a tiny operating system.</p></div>
-          <div className="desktop-status"><div className="status-ring"><span>OS</span></div><div><b>All systems normal</b><small>7 apps installed · API-connected</small></div></div>
-        </div>
-
         <div className="workspace">
-          <aside className={'app-dock ' + (mobileMenu ? 'dock-open' : '')}>
-            <div className="dock-label">APPLICATIONS</div>
-            <button className={'dock-item ' + (activeApp === 'home' ? 'dock-active' : '')} onClick={() => openApp('home')}><span className="dock-icon home-icon"><Cpu size={17}/></span><span>Home</span></button>
-            {APPS.map(item => {
-              const Icon = item.icon;
-              return <button key={item.id} className={'dock-item ' + (activeApp === item.id ? 'dock-active' : '')} onClick={() => openApp(item.id)}><span className={'dock-icon ' + item.color}><Icon size={17}/></span><span>{item.label}</span>{activeApp === item.id && <i className="dock-indicator"/>}</button>;
-            })}
-            <div className="dock-divider"/>
-            <div className="dock-mini-note"><span className="online-dot"/><div><b>ABHINAV.OS</b><small>Built with curiosity</small></div></div>
-          </aside>
-
           <section className="window-shell">
             <div className="window-chrome"><div className="window-controls"><i/><i/><i/></div><div className="window-location"><ActiveIcon size={13}/><span>{activeTitle}</span></div><div className="window-actions"><span>LOCAL SESSION</span><button onClick={() => openApp('home')} aria-label="Go to home"><X size={14}/></button></div></div>
             <div className="window-content" key={activeApp}>
@@ -842,7 +816,7 @@ function App() {
             <div className="window-statusbar"><span><i/> READY</span><span>{activeTitle.toUpperCase()}</span><span>ABHINAV.OS · BETA</span></div>
           </section>
         </div>
-        <footer className="os-taskbar"><div><span className="taskbar-mark">A.</span><span>Abhinav Kumar Mishra</span></div><span className="taskbar-center">A SMALL OS FOR A BIG CURIOSITY</span><div><span className="taskbar-light"/> Made for the web <span>© {new Date().getFullYear()}</span></div></footer>
+        <footer className="os-taskbar"><div><span className="taskbar-mark">A.</span><span>Abhinav Kumar Mishra</span></div><span className="taskbar-center">SOFTWARE · SYSTEMS · CURIOSITY</span><div><span>© {new Date().getFullYear()}</span></div></footer>
       </main>
     </div>
   );
