@@ -545,3 +545,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .tree-level { width: min(300px, 100%); display: flex; justify-content: space-around; align-items: center; }
 .tree-node { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid #a58fff50; border-radius: 50%; color: #c7bbff; background: #a18fff13; font: 8px var(--mono); transition: .2s; }
 .tree-node.visited { border-color: #70ddb1; color: #a7f0c9; background: #5ad29c23; box-shadow: 0 0 12px #5ad29c1c; }
+
+
+.subnet-panel { margin-top: 11px; }
+.subnet-panel>p { margin: 9px 0 12px; color: #8596ad; font-size: 8px; }
+.subnet-input-row { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
+.subnet-input-row label { color: #8c9bb2; font: 8px var(--mono); }
+.subnet-input-row input { width: min(240px, 100%); padding: 8px 10px; border: 1px solid #70dadd3d; border-radius: 5px; color: #b8f0ee; background: #081420; font: 9px var(--mono); }
+.subnet-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.subnet-results>div { min-width: 0; padding: 10px; border: 1px solid #ffffff10; border-radius: 6px; background: #0c1827; }
+.subnet-results small, .subnet-results b { display: block; }
+.subnet-results small { color: #71859f; font: 6px var(--mono); letter-spacing: .7px; }
+.subnet-results b { margin-top: 6px; color: #bee7ea; font: 9px var(--mono); overflow-wrap: anywhere; }
+.subnet-error { padding: 11px; border: 1px solid #ee9d8d44; border-radius: 6px; color: #f1b6a4; background: #ed967d0b; font-size: 8px; }
+@media (max-width: 520px) {
+  .subnet-results { grid-template-columns: repeat(2, 1fr); }
+}
