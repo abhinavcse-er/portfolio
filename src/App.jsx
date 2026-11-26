@@ -589,21 +589,51 @@ function App() {
   );
 
   const renderProjects = () => (
-    <div className="app-content">
-      <div className="app-hero"><div><span className="eyebrow">FILE EXPLORER / 002</span><h2>Selected <em>projects.</em></h2><p>Real repositories, fetched from GitHub when the API is available.</p></div><a className="mini-icon-link" href={'https://github.com/' + USER + '?tab=repositories'} target="_blank" rel="noreferrer"><Github size={17}/><span>All repositories</span><ExternalLink size={13}/></a></div>
-      <div className="project-toolbar"><span><HardDrive size={14}/> /home/abhinav/projects</span><span className="repo-status"><i/> {githubError ? 'Showing saved project index' : 'GitHub sync enabled'}</span></div>
-      <div className="repo-grid">{projects.slice(0, 8).map((project, index) => (
-        <a className="repo-card" href={project.html_url} target="_blank" rel="noreferrer" key={project.id || project.name}>
-          <div className="repo-topline"><span className="repo-file"><Code2 size={15}/></span><span className="repo-number">PROJECT_{String(index + 1).padStart(2, '0')}</span><ArrowUpRight size={16}/></div>
-          <h3>{(project.name || 'Untitled').replaceAll('-', ' ')}</h3><p>{project.description || 'Explore the source code and implementation details in this repository.'}</p>
-          <div className="repo-meta"><span><i className="language-dot"/> {project.language || 'Code'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span><span className="repo-open">Open repo</span></div>
-        </a>
-      ))}</div>
-      <div className="repo-footer"><span><Radio size={15}/> {github?.updatedAt ? 'Last synced ' + new Date(github.updatedAt).toLocaleString() : 'Live GitHub data loads when the server responds.'}</span><a href={'https://github.com/' + USER} target="_blank" rel="noreferrer">github.com/{USER} <ArrowUpRight size={13}/></a></div>
+    <div className="app-content projects-app">
+      <div className="app-hero">
+        <div><span className="eyebrow">WORK / 002 · LIVE GITHUB INDEX</span><h2>Selected <em>projects.</em></h2><p>Real repositories from my GitHub account, with context on what each project actually does.</p></div>
+        <a className="mini-icon-link" href={'https://github.com/' + USER + '?tab=repositories'} target="_blank" rel="noreferrer"><Github size={17}/><span>GitHub profile</span><ExternalLink size={13}/></a>
+      </div>
+      <div className="projects-summary">
+        <div><strong>{github?.stats?.repositories ?? projects.length}</strong><span>non-empty repositories</span></div>
+        <div><strong>{github?.stats?.languages ?? '—'}</strong><span>primary languages</span></div>
+        <div><strong>{github?.stats?.stars ?? '—'}</strong><span>repository stars</span></div>
+        <div className="projects-sync"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'Cached / fallback data' : 'GitHub API connected'}</div>
+      </div>
+      <div className="project-controls">
+        <label className="project-search"><Search size={16}/><input type="search" value={projectQuery} onChange={e => setProjectQuery(e.target.value)} placeholder="Search projects, technologies…" aria-label="Search projects"/></label>
+        <label className="project-sort"><span>SORT</span><select value={projectSort} onChange={e => setProjectSort(e.target.value)} aria-label="Sort projects"><option value="recent">Recently updated</option><option value="stars">Most stars</option></select></label>
+      </div>
+      <div className="project-filter-row" aria-label="Filter projects">
+        {['All', 'AI', 'Security', 'Education', 'Product', 'Frontend'].map(filter => <button key={filter} className={projectFilter === filter ? 'filter-active' : ''} onClick={() => setProjectFilter(filter)}>{filter}</button>)}
+      </div>
+      <div className="project-results-head"><span>SHOWING {visibleProjects.length} OF {projects.length} REPOSITORIES</span><span>UPDATED FROM GITHUB</span></div>
+      <div className="repo-grid project-catalogue">
+        {visibleProjects.map((project, index) => {
+          const info = getProjectPresentation(project);
+          const updated = project.pushed_at || project.updated_at;
+          return <article className="repo-card project-card-pro" key={project.id || project.name}>
+            <div className="repo-topline"><span className="repo-file"><Code2 size={15}/></span><span className="repo-number">REPOSITORY_{String(index + 1).padStart(2, '0')}</span><span className="project-category">{info.category}</span></div>
+            <h3>{info.title}</h3>
+            <p>{info.description}</p>
+            <div className="project-detail-copy">{info.details}</div>
+            <div className="project-stack">{(info.stack || []).slice(0, 5).map(tech => <span key={tech}>{tech}</span>)}</div>
+            <div className="repo-meta"><span><i className="language-dot"/> {project.language || info.stack?.[0] || 'Code'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span>{updated && <span><Clock3 size={12}/> {new Date(updated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>}</div>
+            <div className="project-card-actions">
+              <a href={project.html_url} target="_blank" rel="noreferrer">Source code <ArrowUpRight size={13}/></a>
+              {info.live && <a className="project-live-link" href={info.live} target="_blank" rel="noreferrer">Live app <ExternalLink size={12}/></a>}
+            </div>
+            <span className="project-note">{info.note}</span>
+          </article>;
+        })}
+        {!visibleProjects.length && <div className="project-empty"><Search size={23}/><b>No matching repositories</b><span>Try another search or choose a different category.</span><button onClick={() => { setProjectQuery(''); setProjectFilter('All'); }}>Clear filters</button></div>}
+      </div>
+      <div className="repo-footer"><span><Radio size={15}/> {github?.updatedAt ? 'GitHub sync · ' + new Date(github.updatedAt).toLocaleString() : 'Live GitHub data loads when the server responds.'}</span><a href={'https://github.com/' + USER} target="_blank" rel="noreferrer">github.com/{USER} <ArrowUpRight size={13}/></a></div>
+      <p className="project-disclosure">Project descriptions combine repository metadata with details from their README files and source structure. Prototype, demo and validation limitations are called out explicitly.</p>
     </div>
   );
 
-  const renderDsa = () => (
+    const renderDsa = () => (
     <div className="app-content">
       <div className="app-hero"><div><span className="eyebrow">LEARNING ARCADE / 003</span><h2>Make algorithms <em>click.</em></h2><p>Play with the data. Step through the logic. See the complexity.</p></div><span className="arcade-badge"><Zap size={15}/> INTERACTIVE</span></div>
       <div className="dsa-tabs"><span className="active">SORTING</span><span>SEARCHING</span><span>LINEAR STRUCTURES</span><span>GRAPHS</span></div>
