@@ -28,7 +28,9 @@ const PROJECT_DETAILS = {
     description: 'A shared Indian music lounge with synchronized radio, live listener presence and a community baithak.',
     details: 'The Node.js backend uses Express and Socket.IO for live presence, synchronized radio events, song requests, votes, reactions and community messages. The project includes a curated multi-mood catalog, a personal listening queue, a PWA frontend and SQLite-backed persistence with a fallback storage path.',
     stack: ['Node.js', 'Express', 'Socket.IO', 'SQLite', 'Vanilla JS', 'PWA'],
-    note: 'Real-time full-stack application'
+    live: 'https://apnimehfill.netlify.app/',
+    liveLabel: 'Open MEHFIL',
+    note: 'Live app · real-time community'
   },
   'neurox-ai': {
     title: 'NeuroX AI',
@@ -37,7 +39,8 @@ const PROJECT_DETAILS = {
     details: 'The frontend includes Firebase sign-in, conversation history and a multi-mode chat experience. Its Node.js backend routes provider requests, streams responses and keeps provider secrets server-side, with a Wikipedia fallback for selected general lookups.',
     stack: ['JavaScript', 'Node.js', 'Express', 'Firebase Auth', 'SSE', 'Netlify', 'Render'],
     live: 'https://neuroaii.netlify.app/',
-    note: 'Live web app'
+    liveLabel: 'Open NeuroX AI',
+    note: 'Live app · AI workspace'
   },
   'phishing-backend': {
     title: 'Phishing Classifier API',
@@ -45,7 +48,7 @@ const PROJECT_DETAILS = {
     description: 'A Python API for analysing suspicious URLs using structural features and a trained classification model.',
     details: 'The repository contains a FastAPI server, feature extraction logic, a training script and a saved model artifact. It is separate from the newer PhishGuard research project.',
     stack: ['Python', 'FastAPI', 'scikit-learn', 'URL analysis'],
-    note: 'Backend API repository'
+    note: 'API component · no public app URL published'
   },
   'url-based-phishing-detection-system': {
     title: 'PhishGuard',
@@ -53,7 +56,9 @@ const PROJECT_DETAILS = {
     description: 'An explainable URL-analysis project that scores suspicious URL structure without visiting the submitted website.',
     details: 'The live scanning path uses transparent URL heuristics. The experimental ML v4 candidate is intentionally not enabled: the repository documents a failed independent external-validation release gate. That limitation is stated rather than presenting the model as production-ready.',
     stack: ['Python', 'FastAPI', 'URL features', 'Model evaluation', 'HTML/CSS/JS'],
-    note: 'ML inference gated · heuristics active'
+    live: 'https://abhinavcse-er.github.io/Url-based-phishing-detection-system/',
+    liveLabel: 'Open PhishGuard',
+    note: 'Live website · experimental ML inference gated'
   },
   'rideyou': {
     title: 'RideYou',
@@ -61,7 +66,9 @@ const PROJECT_DETAILS = {
     description: 'A mobile-first ride-booking prototype designed around the needs of customers and vehicle operators in Bihar.',
     details: 'The demo covers customer booking and lookup, manual fare quotation, admin review, driver assignment and trip status. Its GitHub Pages build stores demo bookings in the current browser only; secure multi-user bookings require the planned backend and database work.',
     stack: ['JavaScript', 'React', 'Vite', 'Supabase schema', 'GitHub Pages'],
-    note: 'Frontend demo · local-only booking state'
+    live: 'https://abhinavcse-er.github.io/RideYou/',
+    liveLabel: 'Open RideYou demo',
+    note: 'Live demo · bookings stored in this browser only'
   },
   'digiedu-hub': {
     title: 'DigiEdu Hub',
@@ -69,7 +76,7 @@ const PROJECT_DETAILS = {
     description: 'A multi-page e-learning resource hub built for diploma students, with branch and semester learning material.',
     details: 'The repository includes student-facing course pages and a semester dashboard linking Computer Science, Mechanical and Civil learning resources, notes and practice material.',
     stack: ['HTML', 'CSS', 'JavaScript', 'Student resources'],
-    note: 'Education resource project'
+    note: 'Preview not deployed · source available'
   },
   'itzfizz-scroll-hero': {
     title: 'ITZFIZZ · Scroll Hero',
@@ -77,7 +84,9 @@ const PROJECT_DETAILS = {
     description: 'A responsive, scroll-driven hero experience focused on typography, motion and visual storytelling.',
     details: 'A sports-car visual responds to scroll position using GSAP and ScrollTrigger. The project also includes a reveal sequence, progress indicator, motion trail and responsive layouts.',
     stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger'],
-    note: 'Frontend motion study'
+    live: 'https://abhinavcse-er.github.io/itzfizz-scroll-hero/',
+    liveLabel: 'Open ITZFIZZ',
+    note: 'Live website · scroll-driven motion demo'
   }
 };
 
@@ -402,12 +411,13 @@ function App() {
 
   const projects = github?.repos?.length ? github.repos : FALLBACK_PROJECTS;
   const featuredProjects = github?.featured?.length ? github.featured : projects.slice(0, 3);
+  const liveProjects = projects.filter(project => Boolean(getProjectPresentation(project).live));
   const visibleProjects = projects
     .filter(project => {
       const info = getProjectPresentation(project);
       const query = projectQuery.trim().toLowerCase();
       const matchesQuery = !query || [info.title, info.description, info.category, project.language, ...(info.stack || [])].join(' ').toLowerCase().includes(query);
-      const matchesFilter = projectFilter === 'All' || info.category.toLowerCase().includes(projectFilter.toLowerCase());
+      const matchesFilter = projectFilter === 'All' || (projectFilter === 'Live' ? Boolean(info.live) : info.category.toLowerCase().includes(projectFilter.toLowerCase()));
       return matchesQuery && matchesFilter;
     })
     .sort((a, b) => projectSort === 'stars'
@@ -554,11 +564,15 @@ function App() {
         <div className="featured-grid">
           {featuredProjects.slice(0, 3).map((project, index) => {
             const info = getProjectPresentation(project);
-            return <a className="featured-card" href={project.html_url} target="_blank" rel="noreferrer" key={project.id || project.name}>
-              <div className="featured-top"><span className="featured-index">0{index + 1}</span><span>{info.category}</span><ArrowUpRight size={15}/></div>
+            return <article className="featured-card" key={project.id || project.name}>
+              <div className="featured-top"><span className="featured-index">0{index + 1}</span><span>{info.category}</span>{info.live && <span className="featured-live"><i/> LIVE</span>}</div>
               <h4>{info.title}</h4><p>{info.description}</p>
               <div className="featured-foot"><span>{project.language || info.stack?.[0] || 'Software'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span></div>
-            </a>;
+              <div className="featured-actions">
+                {info.live && <a href={info.live} target="_blank" rel="noreferrer">{info.liveLabel || 'Open live app'} <ExternalLink size={12}/></a>}
+                <a className="featured-source" href={project.html_url} target="_blank" rel="noreferrer">Source <ArrowUpRight size={12}/></a>
+              </div>
+            </article>;
           })}
         </div>
       </section>
@@ -604,17 +618,32 @@ function App() {
         <a className="mini-icon-link" href={'https://github.com/' + USER + '?tab=repositories'} target="_blank" rel="noreferrer"><Github size={17}/><span>GitHub profile</span><ExternalLink size={13}/></a>
       </div>
       <div className="projects-summary">
-        <div><strong>{github?.stats?.repositories ?? projects.length}</strong><span>non-empty repositories</span></div>
-        <div><strong>{github?.stats?.languages ?? '—'}</strong><span>primary languages</span></div>
+        <div><strong>{projects.length}</strong><span>non-empty repositories</span></div>
+        <div><strong>{liveProjects.length}</strong><span>live app previews</span></div>
         <div><strong>{github?.stats?.stars ?? '—'}</strong><span>repository stars</span></div>
         <div className="projects-sync"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'Cached / fallback data' : 'GitHub API connected'}</div>
       </div>
+      <section className="live-apps-section">
+        <div className="live-apps-heading"><div><span className="eyebrow">DEPLOYED EXPERIENCES</span><h3>Open a live app</h3><p>These projects have a published preview link. Launch them directly.</p></div><span className="live-app-count"><i/> {liveProjects.length} LIVE PREVIEWS</span></div>
+        <div className="live-app-grid">
+          {liveProjects.map((project, index) => {
+            const info = getProjectPresentation(project);
+            return <article className="live-app-card" key={project.id || project.name}>
+              <div className="live-app-card-top"><span className="live-app-index">{String(index + 1).padStart(2, '0')}</span><span className="live-app-state"><i/> LIVE</span></div>
+              <h4>{info.title}</h4><p>{info.description}</p>
+              <div className="live-app-stack">{(info.stack || []).slice(0, 3).map(tech => <span key={tech}>{tech}</span>)}</div>
+              <a className="live-app-launch" href={info.live} target="_blank" rel="noreferrer">{info.liveLabel || 'Launch live app'} <ArrowUpRight size={15}/></a>
+              <a className="live-app-source" href={project.html_url} target="_blank" rel="noreferrer">View source code <Github size={12}/></a>
+            </article>;
+          })}
+        </div>
+      </section>
       <div className="project-controls">
         <label className="project-search"><Search size={16}/><input type="search" value={projectQuery} onChange={e => setProjectQuery(e.target.value)} placeholder="Search projects, technologies…" aria-label="Search projects"/></label>
         <label className="project-sort"><span>SORT</span><select value={projectSort} onChange={e => setProjectSort(e.target.value)} aria-label="Sort projects"><option value="recent">Recently updated</option><option value="stars">Most stars</option></select></label>
       </div>
       <div className="project-filter-row" aria-label="Filter projects">
-        {['All', 'AI', 'Security', 'Education', 'Product', 'Frontend'].map(filter => <button key={filter} className={projectFilter === filter ? 'filter-active' : ''} onClick={() => setProjectFilter(filter)}>{filter}</button>)}
+        {['All', 'Live', 'AI', 'Security', 'Education', 'Product', 'Frontend'].map(filter => <button key={filter} className={projectFilter === filter ? 'filter-active' : ''} onClick={() => setProjectFilter(filter)}>{filter}</button>)}
       </div>
       <div className="project-results-head"><span>SHOWING {visibleProjects.length} OF {projects.length} REPOSITORIES</span><span>UPDATED FROM GITHUB</span></div>
       <div className="repo-grid project-catalogue">
@@ -629,8 +658,10 @@ function App() {
             <div className="project-stack">{(info.stack || []).slice(0, 5).map(tech => <span key={tech}>{tech}</span>)}</div>
             <div className="repo-meta"><span><i className="language-dot"/> {project.language || info.stack?.[0] || 'Code'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span>{updated && <span><Clock3 size={12}/> {new Date(updated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>}</div>
             <div className="project-card-actions">
-              <a href={project.html_url} target="_blank" rel="noreferrer">Source code <ArrowUpRight size={13}/></a>
-              {(info.live || project.homepage) && <a className="project-live-link" href={info.live || project.homepage} target="_blank" rel="noreferrer">Live app <ExternalLink size={12}/></a>}
+              {info.live
+                ? <a className="project-live-link" href={info.live} target="_blank" rel="noreferrer">{info.liveLabel || 'Open live app'} <ExternalLink size={13}/></a>
+                : <span className="project-no-live">{info.note?.toLowerCase().includes('api component') ? 'API / backend only' : 'No public preview yet'}</span>}
+              <a className="project-source-link" href={project.html_url} target="_blank" rel="noreferrer">Source code <ArrowUpRight size={13}/></a>
             </div>
             <span className="project-note">{info.note}</span>
           </article>;
