@@ -61,3 +61,21 @@ The included render.yaml configures a Node web service that builds with npm inst
 - **ITZFIZZ Scroll Hero** (itzfizz-scroll-hero): responsive GSAP / ScrollTrigger motion experiment.
 
 Empty repositories and forks are intentionally excluded from the public project catalogue. Project-specific descriptions are maintained in src/App.jsx; live repository metadata is fetched from GitHub at runtime.
+
+
+
+## Live application links
+
+The Projects app shows a dedicated **Open a live app** section for these published previews:
+
+| Project | Live preview | Source |
+|---|---|---|
+| MEHFIL | https://apnimehfill.netlify.app/ | https://github.com/abhinavcse-er/antigravity-projects/tree/main/mehfil |
+| NeuroX AI | https://neuroaii.netlify.app/ | https://github.com/abhinavcse-er/neurox-ai |
+| PhishGuard | https://abhinavcse-er.github.io/Url-based-phishing-detection-system/ | https://github.com/abhinavcse-er/Url-based-phishing-detection-system |
+| RideYou demo | https://abhinavcse-er.github.io/RideYou/ | https://github.com/abhinavcse-er/RideYou |
+| ITZFIZZ | https://abhinavcse-er.github.io/itzfizz-scroll-hero/ | https://github.com/abhinavcse-er/itzfizz-scroll-hero |
+
+DigiEdu Hub currently has no configured public Pages deployment. The phishing-backend repository is an API component and does not have a published app URL in its repository metadata. Those cards therefore show source/status rather than a fabricated live-app button. The Sugarcane Digital Khata repository is currently empty and is excluded from the catalogue.
+
+The live preview links above are derived from repository canonical metadata or successful GitHub Pages deployment workflows. A deployment can still be paused or unavailable at the hosting provider; the links are launch targets, not uptime guarantees.
