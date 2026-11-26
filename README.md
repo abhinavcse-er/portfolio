@@ -7,8 +7,8 @@ A personal portfolio designed as a small desktop-style operating system. Visitor
 - **Personal OS desktop:** app dock, window chrome, status tray and responsive mobile navigation.
 - **Profile app:** background, learning focus and technology toolbox.
 - **Project explorer:** live public GitHub repository data through the Express API, with a fallback project index.
-- **DSA Arcade:** step-by-step Bubble, Selection and Insertion Sort; Linear and Binary Search; Stack and Queue operations; BFS and DFS traversal.
-- **Network Lab:** interactive TCP three-way handshake, DNS resolution and OSI encapsulation walkthroughs, plus TCP/UDP, IP, routing and HTTP/HTTPS explainers.
+- **DSA Arcade:** step-by-step Bubble, Selection, Insertion, Quick and Merge Sort; Linear and Binary Search; Stack, Queue and Linked List operations; BFS and DFS traversal; Binary Search Tree traversals (inorder, preorder and postorder).
+- **Network Lab:** interactive TCP three-way handshake, DNS resolution and OSI encapsulation walkthroughs, plus TCP/UDP, IP routing, an IPv4 CIDR subnet calculator and HTTP/HTTPS explainers.
 - **Terminal:** safe in-browser command demo (help, about, projects, skills, dsa, network, contact, clear).
 - **Know Me Quiz:** a small game that introduces the developer through questions.
 - **Contact center:** email, LinkedIn and GitHub links.
