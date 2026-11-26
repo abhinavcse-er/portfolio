@@ -504,49 +504,78 @@ function App() {
 
   const renderHome = () => (
     <div className="home-screen">
-      <div className="welcome-card">
-        <div className="welcome-copy">
-          <span className="micro-label"><Sparkles size={13}/> PERSONAL COMPUTING SPACE · EST. 2026</span>
-          <h2>Hello, I'm <span>Abhinav.</span></h2>
-          <p>Not just a portfolio. This is my little corner of the internet. Open an app, play with a concept, and get to know the person behind the code.</p>
+      <section className="home-hero">
+        <div className="home-hero-copy">
+          <span className="micro-label"><Sparkles size={13}/> SOFTWARE ENGINEERING · SYSTEMS · CURIOSITY</span>
+          <h2>Building useful things.<br/><em>Understanding how they work.</em></h2>
+          <p>I'm Abhinav Kumar Mishra — a B.Tech CSE (Cybersecurity) student who enjoys creating products, solving engineering problems and exploring the systems behind the screen.</p>
           <div className="welcome-actions">
-            <button className="primary-action" onClick={() => openApp('profile')}>Meet the developer <ArrowRight size={15}/></button>
-            <button className="text-action" onClick={() => openApp('dsa')}>Launch DSA arcade <Binary size={15}/></button>
+            <button className="primary-action" onClick={() => openApp('projects')}>Explore my work <ArrowRight size={15}/></button>
+            <button className="text-action" onClick={() => openApp('dsa')}>Try the DSA lab <Binary size={15}/></button>
           </div>
+          <div className="home-hero-meta"><span><i className="online-dot"/> OPEN TO INTERNSHIPS & COLLABORATION</span><span>BIHAR, INDIA</span></div>
         </div>
-        <div className="welcome-orbit" aria-hidden="true">
-          <div className="orbit-ring ring-one"/><div className="orbit-ring ring-two"/>
-          <div className="orbit-core"><span>A</span><small>OS</small></div>
-          <i className="orbit-point point-one"/><i className="orbit-point point-two"/><i className="orbit-point point-three"/>
+        <div className="home-profile-visual">
+          <div className="profile-glow"/>
+          {github?.profile?.avatar
+            ? <img className="profile-photo" src={github.profile.avatar} alt="GitHub profile avatar of Abhinav Kumar Mishra" />
+            : <div className="profile-photo profile-photo-fallback">A<span>.</span></div>}
+          <div className="profile-float-card">
+            <span className="profile-float-kicker">CURRENTLY LEARNING</span>
+            <b>DSA <i/> Computer Networks</b>
+            <small>Building a stronger systems foundation</small>
+          </div>
+          <div className="profile-handle"><Github size={13}/><span>@{github?.profile?.login || USER}</span><i/></div>
         </div>
-        <div className="welcome-bottom"><span><i className="online-dot"/> SYSTEM ONLINE</span><span>BUILD · LEARN · REPEAT</span><span>IN / 26</span></div>
-      </div>
+        <div className="home-hero-bottom"><span><i className="online-dot"/> WORKSPACE ONLINE</span><span>BUILD · MEASURE · LEARN · REPEAT</span><span>ABHINAV.OS / 01</span></div>
+      </section>
 
       <div className="home-stats">
-        <div className="mini-stat"><span><Github size={15}/></span><strong>{github?.stats?.repositories ?? '—'}</strong><small>Public repositories</small></div>
-        <div className="mini-stat"><span><Star size={15}/></span><strong>{github?.stats?.stars ?? '—'}</strong><small>Repository stars</small></div>
+        <div className="mini-stat"><span><Github size={16}/></span><strong>{github?.stats?.repositories ?? '—'}</strong><small>Active project repositories</small></div>
+        <div className="mini-stat"><span><Star size={16}/></span><strong>{github?.stats?.stars ?? '—'}</strong><small>GitHub stars</small></div>
         <div className="mini-stat"><span><UsersIcon/></span><strong>{github?.stats?.followers ?? '—'}</strong><small>GitHub followers</small></div>
-        <div className="mini-stat"><span><Activity size={15}/></span><strong>02</strong><small>Core learning tracks</small></div>
+        <div className="mini-stat"><span><Code2 size={16}/></span><strong>{github?.stats?.languages ?? '—'}</strong><small>Primary languages</small></div>
       </div>
 
-      <div className="section-title-row"><div><span className="eyebrow">YOUR DESKTOP</span><h3>Choose an experience</h3></div><span className="muted-note">Tap an icon to launch</span></div>
-      <div className="app-launch-grid">
-        {APPS.map(item => {
-          const Icon = item.icon;
-          return <button className="launch-tile" key={item.id} onClick={() => openApp(item.id)}>
-            <span className={'app-icon ' + item.color}><Icon size={20}/></span>
-            <span className="launch-title">{item.label}</span><small>{item.sub}</small><ChevronRight size={14} className="launch-chevron"/>
-          </button>;
-        })}
-      </div>
+      <section className="home-featured">
+        <div className="section-title-row">
+          <div><span className="eyebrow">SELECTED WORK / GITHUB</span><h3>Projects with a purpose</h3></div>
+          <button className="inline-link" onClick={() => openApp('projects')}>All projects <ArrowRight size={14}/></button>
+        </div>
+        <div className="featured-grid">
+          {featuredProjects.slice(0, 3).map((project, index) => {
+            const info = getProjectPresentation(project);
+            return <a className="featured-card" href={project.html_url} target="_blank" rel="noreferrer" key={project.id || project.name}>
+              <div className="featured-top"><span className="featured-index">0{index + 1}</span><span>{info.category}</span><ArrowUpRight size={15}/></div>
+              <h4>{info.title}</h4><p>{info.description}</p>
+              <div className="featured-foot"><span>{project.language || info.stack?.[0] || 'Software'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span></div>
+            </a>;
+          })}
+        </div>
+      </section>
+
+      <section className="home-apps">
+        <div className="section-title-row"><div><span className="eyebrow">THE WORKSPACE</span><h3>Explore the interactive apps</h3></div><span className="muted-note">Pick a tool to begin</span></div>
+        <div className="app-launch-grid">
+          {APPS.map(item => {
+            const Icon = item.icon;
+            return <button className="launch-tile" key={item.id} onClick={() => openApp(item.id)}>
+              <span className={'app-icon ' + item.color}><Icon size={20}/></span>
+              <span className="launch-title">{item.label}</span><small>{item.sub}</small><ChevronRight size={14} className="launch-chevron"/>
+            </button>;
+          })}
+        </div>
+      </section>
+
       <div className="home-bottom-grid">
-        <div className="info-panel"><div className="panel-heading"><BookOpen size={16}/> A QUICK INTRO <span>README.md</span></div><p>I'm a second-year CSE (Cybersecurity) student who leans toward software engineering. I enjoy turning ideas into useful products and understanding what happens behind the interface.</p><button className="inline-link" onClick={() => openApp('profile')}>Read my story <ArrowRight size={14}/></button></div>
-        <div className="info-panel signal-panel"><div className="panel-heading"><Signal size={16}/> CURRENT FOCUS <span>NOW</span></div><div className="focus-row"><span>01</span><div><b>Problem solving</b><small>DSA, patterns and clean logic</small></div></div><div className="focus-row"><span>02</span><div><b>Systems thinking</b><small>Networks, security and full-stack apps</small></div></div></div>
+        <div className="info-panel"><div className="panel-heading"><BookOpen size={16}/> THE DEVELOPER <span>PROFILE</span></div><p>Second-year B.Tech CSE (Cybersecurity). My primary interest is software engineering — building full-stack products while strengthening DSA, networking and security fundamentals.</p><button className="inline-link" onClick={() => openApp('profile')}>Read my story <ArrowRight size={14}/></button></div>
+        <div className="info-panel signal-panel"><div className="panel-heading"><Activity size={16}/> CURRENT FOCUS <span>IN PROGRESS</span></div><div className="focus-row"><span>01</span><div><b>Problem solving</b><small>Algorithms, data structures and clean code</small></div></div><div className="focus-row"><span>02</span><div><b>Systems engineering</b><small>Networks, APIs and defensive security</small></div></div></div>
       </div>
+      <div className="home-data-note"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'GitHub data is temporarily unavailable; showing the saved project index.' : github?.updatedAt ? 'Project data synced from GitHub · ' + new Date(github.updatedAt).toLocaleString() : 'Connecting to GitHub project data…'}</div>
     </div>
   );
 
-  const renderProfile = () => (
+    const renderProfile = () => (
     <div className="app-content">
       <div className="app-hero"><div><span className="eyebrow">PROFILE / 001</span><h2>The human behind <em>the keyboard.</em></h2><p>Curious by default. Builder by choice. Learning one system at a time.</p></div><div className="profile-avatar">A<span>.</span></div></div>
       <div className="profile-grid">
