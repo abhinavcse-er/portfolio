@@ -12,6 +12,7 @@ const LINKEDIN = 'https://www.linkedin.com/in/abhinav-kumar-mishra-29919a363/';
 const EMAIL = 'erabhinavkumarmishra@gmail.com';
 
 const FALLBACK_PROJECTS = [
+  { name: 'antigravity-projects', description: 'MEHFIL: a full-stack real-time Indian music lounge with synchronized radio, live community, song requests and persistent data.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/antigravity-projects', stargazers_count: 0 },
   { name: 'neurox-ai', description: 'Full-stack AI workspace for everyday questions, coding, study and defensive cybersecurity learning.', language: 'CSS', html_url: 'https://github.com/' + USER + '/neurox-ai', stargazers_count: 0 },
   { name: 'Url-based-phishing-detection-system', description: 'PhishGuard: explainable URL risk heuristics with an experimental ML model held behind an external-validation gate.', language: 'Python', html_url: 'https://github.com/' + USER + '/Url-based-phishing-detection-system', stargazers_count: 0 },
   { name: 'phishing-backend', description: 'Python API for URL analysis using extracted URL features and a trained classifier.', language: 'Python', html_url: 'https://github.com/' + USER + '/phishing-backend', stargazers_count: 0 },
@@ -21,6 +22,14 @@ const FALLBACK_PROJECTS = [
 ];
 
 const PROJECT_DETAILS = {
+  'antigravity-projects': {
+    title: 'MEHFIL · Real-time music lounge',
+    category: 'Full-stack · Real-time',
+    description: 'A shared Indian music lounge with synchronized radio, live listener presence and a community baithak.',
+    details: 'The Node.js backend uses Express and Socket.IO for live presence, synchronized radio events, song requests, votes, reactions and community messages. The project includes a curated multi-mood catalog, a personal listening queue, a PWA frontend and SQLite-backed persistence with a fallback storage path.',
+    stack: ['Node.js', 'Express', 'Socket.IO', 'SQLite', 'Vanilla JS', 'PWA'],
+    note: 'Real-time full-stack application'
+  },
   'neurox-ai': {
     title: 'NeuroX AI',
     category: 'AI product',
