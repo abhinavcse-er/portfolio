@@ -1199,3 +1199,72 @@ a:hover { text-decoration: none; }
   .os-taskbar { flex-wrap: wrap; gap: 12px; }
   .os-taskbar .taskbar-center { display: none; }
 }
+
+
+/* DSA Arcade: one focused playground at a time */
+.playground-nav {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin: 18px 0 14px;
+}
+.playground-nav button {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
+  min-width: 0; min-height: 66px; padding: 12px;
+  border: 1px solid var(--line); border-radius: 10px;
+  color: #d5deed; background: rgba(13,20,34,.76);
+  text-align: left; cursor: pointer; transition: .18s ease;
+}
+.playground-nav button:hover { border-color: rgba(105,219,224,.45); background: #111d30; }
+.playground-nav button.playground-active {
+  border-color: rgba(105,219,224,.7);
+  background: linear-gradient(145deg, rgba(105,219,224,.14), rgba(139,117,232,.12));
+  box-shadow: inset 0 0 0 1px rgba(105,219,224,.12);
+}
+.playground-nav b { font-size: 11px; }
+.playground-nav small { color: #8494ad; font-size: 8px; }
+.playground-content { display: grid; grid-template-columns: minmax(0,1fr); }
+.playground-content > .lab-module { width: 100%; padding: clamp(16px, 3vw, 25px); }
+.playground-content .module-description { max-width: 720px; font-size: 11px; }
+.playground-content .sort-bars { min-height: 160px; }
+.playground-content .sort-bar { width: clamp(22px, 4vw, 38px); max-height: 125px; }
+.playground-content .search-cells { justify-content: flex-start; gap: 8px; }
+.playground-content .search-cell { min-width: 42px; height: 42px; font-size: 12px; }
+.playground-content .step-caption { font-size: 10px; min-height: 42px; }
+.playground-content .step-caption span { font-size: 8px; }
+.playground-content .module-actions button, .playground-content .structure-buttons button { min-height: 35px; padding: 0 13px; font-size: 10px; }
+.graph-learning-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px; margin: 14px 0;
+}
+.graph-learning-grid article {
+  min-width: 0; padding: 15px; border: 1px solid var(--line);
+  border-radius: 9px; background: rgba(7,15,27,.55);
+}
+.graph-learning-grid h4 { margin: 7px 0; color: #e7edf8; font-size: 13px; }
+.graph-learning-grid p { margin: 0 0 10px; color: #91a0b7; font-size: 10px; line-height: 1.7; }
+.graph-learning-grid pre {
+  margin: 0; padding: 11px; overflow-x: auto; border-radius: 6px;
+  color: #b7d9e7; background: #080f1b; font: 10px/1.8 var(--mono);
+}
+.matrix-wrap { overflow-x: auto; }
+.adjacency-matrix { width: 100%; border-collapse: separate; border-spacing: 4px; text-align: center; font: 10px var(--mono); }
+.adjacency-matrix th { color: #a9b8cd; font-weight: 700; }
+.adjacency-matrix td { min-width: 22px; padding: 6px 3px; border-radius: 4px; color: #8292a9; background: #111d2c; }
+.adjacency-matrix td.matrix-one { color: #a5edce; background: #17483f; }
+.graph-analogy, .trace-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.graph-analogy span, .graph-analogy b, .trace-pills span {
+  padding: 7px 9px; border: 1px solid #8ba4bc24; border-radius: 5px;
+  color: #b9c9dc; background: #111d2c; font-size: 9px;
+}
+.graph-analogy b { color: #9fe1df; }
+@media (max-width: 850px) {
+  .playground-nav { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  .playground-nav { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+  .playground-nav button { min-height: 58px; padding: 10px; }
+  .graph-learning-grid { grid-template-columns: 1fr; }
+  .playground-content > .lab-module { padding: 14px; }
+  .playground-content .sort-bars { min-height: 125px; }
+}
