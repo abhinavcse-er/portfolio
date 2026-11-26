@@ -119,18 +119,18 @@ function createSearchFrames(values, target, method) {
 
 function createTraversal(mode) {
   const seen = new Set(['A']);
-  const order = ['A'];
-  const frames = [{ order: [], current: 'A', frontier: ['A'], note: 'Start at node A.' }];
+  const order = [];
+  const frames = [{ order: [], current: '', frontier: ['A'], note: 'Start at node A.' }];
   const pending = ['A'];
   while (pending.length) {
     const node = mode === 'bfs' ? pending.shift() : pending.pop();
+    order.push(node);
     frames.push({ order: order.slice(), current: node, frontier: pending.slice(), note: mode === 'bfs' ? 'Visit this node, then explore its neighbours level by level.' : 'Visit this node, then go as deep as possible before backtracking.' });
     const neighbours = GRAPH[node] || [];
     const next = mode === 'dfs' ? neighbours.slice().reverse() : neighbours;
     next.forEach(n => {
       if (!seen.has(n)) {
         seen.add(n);
-        order.push(n);
         pending.push(n);
       }
     });
@@ -433,7 +433,7 @@ function App() {
           <p className="module-description">Try LIFO and FIFO operations. Add a value, then remove one.</p>
           <div className="structure-input"><input aria-label="Value to add" type="number" value={structureInput} onChange={e => setStructureInput(e.target.value)}/><span>VALUE</span></div>
           <div className="structure-columns">
-            <div className="structure-box"><div className="structure-title"><b>STACK</b><span>LIFO</span></div><div className="stack-visual">{stack.length ? stack.map((n, i) => <div key={i} className={'stack-item ' + (i === stack.length - 1 ? 'stack-top' : '')}>{n}{i === stack.length - 1 && <small>TOP</small>}</div>).reverse() : <span className="empty-state">Empty stack</span>}</div><div className="structure-buttons"><button onClick={() => structureAction('push')}>Push</button><button onClick={() => structureAction('pop')} disabled={!stack.length}>Pop</button></div></div>
+            <div className="structure-box"><div className="structure-title"><b>STACK</b><span>LIFO</span></div><div className="stack-visual">{stack.length ? stack.map((n, i) => <div key={i} className={'stack-item ' + (i === stack.length - 1 ? 'stack-top' : '')}>{n}{i === stack.length - 1 && <small>TOP</small>}</div>) : <span className="empty-state">Empty stack</span>}</div><div className="structure-buttons"><button onClick={() => structureAction('push')}>Push</button><button onClick={() => structureAction('pop')} disabled={!stack.length}>Pop</button></div></div>
             <div className="structure-box"><div className="structure-title"><b>QUEUE</b><span>FIFO</span></div><div className="queue-visual">{queue.length ? queue.map((n, i) => <div key={i} className={'queue-item ' + (i === 0 ? 'queue-front' : '')}>{n}</div>) : <span className="empty-state">Empty queue</span>}</div><div className="structure-buttons"><button onClick={() => structureAction('enqueue')}>Enqueue</button><button onClick={() => structureAction('dequeue')} disabled={!queue.length}>Dequeue</button></div></div>
           </div>
         </section>
