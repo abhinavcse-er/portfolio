@@ -44,6 +44,7 @@ async function refreshGithubData() {
       .sort((a, b) => new Date(b.pushed_at || b.updated_at || 0) - new Date(a.pushed_at || a.updated_at || 0));
 
     const featuredNames = [
+      'antigravity-projects',
       'neurox-ai',
       'phishing-backend',
       'Url-based-phishing-detection-system',
