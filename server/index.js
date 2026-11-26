@@ -34,25 +34,51 @@ async function refreshGithubData() {
 
   refreshPromise = (async () => {
     const [profile, repos] = await Promise.all([
-      github(`/users/${encodeURIComponent(GITHUB_USER)}`),
-      github(`/users/${encodeURIComponent(GITHUB_USER)}/repos?sort=updated&per_page=100&type=owner`)
+      github('/users/' + encodeURIComponent(GITHUB_USER)),
+      github('/users/' + encodeURIComponent(GITHUB_USER) + '/repos?sort=updated&per_page=100&type=owner')
     ]);
 
-    const publicRepos = repos
-      .filter(repo => !repo.fork)
-      .sort((a, b) => new Date(b.pushed_at || 0) - new Date(a.pushed_at || 0));
+    // Forks, this portfolio itself and empty placeholders are not presented as projects.
+    const projectRepos = repos
+      .filter(repo => !repo.fork && repo.name.toLowerCase() !== 'portfolio' && Number(repo.size) > 0)
+      .sort((a, b) => new Date(b.pushed_at || b.updated_at || 0) - new Date(a.pushed_at || a.updated_at || 0));
 
     const featuredNames = [
       'neurox-ai',
       'phishing-backend',
       'Url-based-phishing-detection-system',
+      'RideYou',
       'digiedu-hub',
-      'sugarcane-digital-khata',
-      'RideYou'
+      'itzfizz-scroll-hero'
     ];
-    const featured = featuredNames
-      .map(name => publicRepos.find(repo => repo.name.toLowerCase() === name.toLowerCase()))
-      .filter(Boolean);
+    const byName = new Map(projectRepos.map(repo => [repo.name.toLowerCase(), repo]));
+    const featured = featuredNames.map(name => byName.get(name.toLowerCase())).filter(Boolean);
+
+    const toProject = repo => ({
+      id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      description: repo.description,
+      language: repo.language,
+      topics: Array.isArray(repo.topics) ? repo.topics : [],
+      stargazers_count: repo.stargazers_count || 0,
+      forks_count: repo.forks_count || 0,
+      open_issues_count: repo.open_issues_count || 0,
+      size: repo.size || 0,
+      html_url: repo.html_url,
+      homepage: repo.homepage || null,
+      default_branch: repo.default_branch,
+      updated_at: repo.updated_at,
+      pushed_at: repo.pushed_at,
+      archived: Boolean(repo.archived)
+    });
+
+    const projects = projectRepos.map(toProject);
+    const featuredProjects = featured.map(toProject);
+    const languages = {};
+    projects.forEach(repo => {
+      if (repo.language) languages[repo.language] = (languages[repo.language] || 0) + 1;
+    });
 
     const data = {
       profile: {
@@ -64,11 +90,14 @@ async function refreshGithubData() {
         publicRepos: profile.public_repos,
         htmlUrl: profile.html_url
       },
-      repos: featured.length ? featured : publicRepos.slice(0, 6),
+      repos: projects.slice(0, 50),
+      featured: featuredProjects,
+      languages,
       stats: {
-        repositories: publicRepos.length,
-        stars: publicRepos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0),
-        followers: profile.followers
+        repositories: projects.length,
+        stars: projects.reduce((sum, repo) => sum + repo.stargazers_count, 0),
+        followers: profile.followers,
+        languages: Object.keys(languages).length
       },
       updatedAt: new Date().toISOString()
     };
@@ -83,7 +112,6 @@ async function refreshGithubData() {
     refreshPromise = null;
   }
 }
-
 app.get('/api/health', (_req, res) => {
   res.set('Cache-Control', 'no-store');
   res.json({ ok: true, service: 'portfolio-api' });
