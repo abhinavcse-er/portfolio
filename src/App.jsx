@@ -15,8 +15,9 @@ const FALLBACK_PROJECTS = [
   { name: 'NeuroX AI', description: 'An AI assistant experience with a conversational interface and connected knowledge sources.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/neurox-ai', stargazers_count: 0 },
   { name: 'Phishing Detection API', description: 'A machine-learning powered phishing URL analysis API and detection workflow.', language: 'Python', html_url: 'https://github.com/' + USER + '/phishing-backend', stargazers_count: 0 },
   { name: 'DigiEduHub', description: 'A student-focused education hub for organizing semester learning resources.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/digiedu-hub', stargazers_count: 0 },
-  { name: 'Sugarcane Digital Khata', description: 'A digital ledger concept for sugarcane farmers, deliveries, expenses and payment tracking.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/sugarcane-digital-khata', stargazers_count: 0 },
-  { name: 'MEHFIL', description: 'A music and community listening experience built around shared moods and baithaks.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/mehfil', stargazers_count: 0 }
+  { name: 'Sugarcane Digital Khata', description: 'A digital ledger concept for sugarcane farmers, deliveries, expenses and payment tracking.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/Sugarcane-Digital-Khata', stargazers_count: 0 },
+  { name: 'RideYou', description: 'A vehicle booking platform concept connecting customers, mediators and vehicle owners.', language: 'JavaScript', html_url: 'https://github.com/' + USER + '/RideYou', stargazers_count: 0 },
+  { name: 'URL Phishing Detection', description: 'A URL-focused phishing detection project exploring features and classification.', language: 'Python', html_url: 'https://github.com/' + USER + '/Url-based-phishing-detection-system', stargazers_count: 0 }
 ];
 
 const APPS = [
@@ -201,6 +202,22 @@ function createTreeTraversal(mode) {
   return order.map((node, index) => ({ node: String(node), visited: order.slice(0, index + 1) }));
 }
 
+function calculateSubnet(input) {
+  const match = /^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/.exec(input.trim());
+  if (!match) return null;
+  const [address, prefixText] = input.trim().split('/');
+  const octets = address.split('.').map(Number);
+  const prefix = Number(prefixText);
+  if (octets.some(part => !Number.isInteger(part) || part < 0 || part > 255) || prefix < 0 || prefix > 32) return null;
+  const ip = (((octets[0] << 24) >>> 0) + (octets[1] << 16) + (octets[2] << 8) + octets[3]) >>> 0;
+  const mask = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0;
+  const network = (ip & mask) >>> 0;
+  const broadcast = (network | (~mask >>> 0)) >>> 0;
+  const toIp = value => [value >>> 24, (value >>> 16) & 255, (value >>> 8) & 255, value & 255].join('.');
+  const usableHosts = prefix === 32 ? 1 : prefix === 31 ? 2 : Math.max(0, broadcast - network - 1);
+  return { prefix, mask: toIp(mask), network: toIp(network), broadcast: toIp(broadcast), usableHosts, totalAddresses: Math.pow(2, 32 - prefix) };
+}
+
 const NETWORK_FLOWS = {
   tcp: {
     title: 'TCP three-way handshake',
@@ -262,6 +279,7 @@ function App() {
   const [traversalStep, setTraversalStep] = useState(0);
   const [networkMode, setNetworkMode] = useState('tcp');
   const [networkStep, setNetworkStep] = useState(0);
+  const [subnetInput, setSubnetInput] = useState('192.168.1.0/24');
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
   const [quizChoice, setQuizChoice] = useState(null);
@@ -318,6 +336,7 @@ function App() {
   const currentTraversal = traversalFrames[Math.min(traversalStep, traversalFrames.length - 1)];
   const flow = NETWORK_FLOWS[networkMode];
   const currentNetwork = flow.steps[Math.min(networkStep, flow.steps.length - 1)];
+  const subnetResult = useMemo(() => calculateSubnet(subnetInput), [subnetInput]);
   const currentQuiz = QUIZ[quizIndex];
 
   const openApp = id => {
@@ -566,6 +585,7 @@ function App() {
         <div className="panel-card"><span className="card-kicker">NETWORK LAYER</span><h3>IP, routers & packets</h3><p>IP addresses identify endpoints across networks. Routers consult forwarding information to choose a next hop. Ethernet and Wi-Fi handle local-link delivery.</p><div className="protocol-pills"><span>IPv4 / IPv6</span><span>Routing</span><span>MAC address</span></div></div>
         <div className="panel-card"><span className="card-kicker">APPLICATION LAYER</span><h3>HTTP & HTTPS</h3><p>HTTP defines request/response semantics. HTTPS protects HTTP using TLS, helping provide confidentiality, integrity and server authentication.</p><div className="protocol-pills"><span>HTTP</span><span>TLS</span><span>DNS</span></div></div>
       </div>
+      <div className="subnet-panel panel-card"><div className="card-heading"><div><span className="card-kicker">IP ADDRESSING · SUBNETTING</span><h3>IPv4 subnet calculator</h3></div><span className="live-tag"><i/> LOCAL</span></div><p>Change the address and CIDR prefix to see how a network is divided.</p><div className="subnet-input-row"><label htmlFor="subnet-cidr">IP / CIDR</label><input id="subnet-cidr" value={subnetInput} onChange={e => setSubnetInput(e.target.value)} spellCheck="false"/></div>{subnetResult ? <div className="subnet-results"><div><small>NETWORK ADDRESS</small><b>{subnetResult.network}</b></div><div><small>SUBNET MASK</small><b>{subnetResult.mask}</b></div><div><small>BROADCAST</small><b>{subnetResult.broadcast}</b></div><div><small>USABLE HOSTS</small><b>{subnetResult.usableHosts.toLocaleString('en-IN')}</b></div><div><small>CIDR PREFIX</small><b>/{subnetResult.prefix}</b></div><div><small>TOTAL ADDRESSES</small><b>{subnetResult.totalAddresses.toLocaleString('en-IN')}</b></div></div> : <div className="subnet-error">Enter a valid IPv4 address and prefix, for example 192.168.1.0/24.</div>}</div>
       <div className="osi-list"><div className="section-title-row"><div><span className="eyebrow">REFERENCE</span><h3>OSI model at a glance</h3></div><span className="muted-note">7 layers</span></div>{[['7','Application','HTTP · DNS · SMTP'],['6','Presentation','Encoding · encryption · compression'],['5','Session','Dialog and session management'],['4','Transport','TCP · UDP · ports'],['3','Network','IP addressing · routing'],['2','Data Link','Ethernet · Wi-Fi · frames · MAC'],['1','Physical','Bits · signals · medium']].map(row => <div className="osi-row" key={row[0]}><b>{row[0]}</b><strong>{row[1]}</strong><span>{row[2]}</span></div>)}</div>
     </div>
   );
