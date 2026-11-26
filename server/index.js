@@ -47,7 +47,8 @@ async function refreshGithubData() {
       'phishing-backend',
       'Url-based-phishing-detection-system',
       'digiedu-hub',
-      'sugarcane-digital-khata'
+      'sugarcane-digital-khata',
+      'RideYou'
     ];
     const featured = featuredNames
       .map(name => publicRepos.find(repo => repo.name.toLowerCase() === name.toLowerCase()))
