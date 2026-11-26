@@ -534,3 +534,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto!important; animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; }
 }
+
+.linked-list-visual { min-height: 100px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px; padding: 14px 0; }
+.linked-node-wrap { display: flex; align-items: center; gap: 6px; }
+.linked-node-wrap>svg { color: #6bd9df; }
+.linked-node { min-width: 44px; min-height: 47px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 1px solid #70dadd44; border-radius: 6px; background: #65d8df10; color: #b7f0ef; }
+.linked-node b { font: 10px var(--mono); }
+.linked-node small { color: #6faaaF; font: 6px var(--mono); letter-spacing: .8px; }
+.tree-visual { min-height: 157px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px 0; position: relative; }
+.tree-level { width: min(300px, 100%); display: flex; justify-content: space-around; align-items: center; }
+.tree-node { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid #a58fff50; border-radius: 50%; color: #c7bbff; background: #a18fff13; font: 8px var(--mono); transition: .2s; }
+.tree-node.visited { border-color: #70ddb1; color: #a7f0c9; background: #5ad29c23; box-shadow: 0 0 12px #5ad29c1c; }
