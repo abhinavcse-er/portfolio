@@ -389,7 +389,7 @@ function App() {
         if (!active) return;
         setGithub(data);
         setGithubError(false);
-        try { window.localStorage.setItem('portfolio-github-cache', JSON.stringify(data)); } catch {}
+        try { window.localStorage.setItem('portfolio-github-cache-v2', JSON.stringify(data)); } catch {}
       })
       .catch(() => { if (active) setGithubError(true); })
       .finally(() => window.clearTimeout(timeoutId));
@@ -630,7 +630,7 @@ function App() {
             <div className="repo-meta"><span><i className="language-dot"/> {project.language || info.stack?.[0] || 'Code'}</span><span><Star size={12}/> {project.stargazers_count || 0}</span>{updated && <span><Clock3 size={12}/> {new Date(updated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>}</div>
             <div className="project-card-actions">
               <a href={project.html_url} target="_blank" rel="noreferrer">Source code <ArrowUpRight size={13}/></a>
-              {info.live && <a className="project-live-link" href={info.live} target="_blank" rel="noreferrer">Live app <ExternalLink size={12}/></a>}
+              {(info.live || project.homepage) && <a className="project-live-link" href={info.live || project.homepage} target="_blank" rel="noreferrer">Live app <ExternalLink size={12}/></a>}
             </div>
             <span className="project-note">{info.note}</span>
           </article>;
