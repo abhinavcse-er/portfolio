@@ -77,6 +77,49 @@ function createSortFrames(input, algorithm) {
       a[j + 1] = key;
       record([j + 1], 'Insert the key into its correct position.');
     }
+  } else if (algorithm === 'quick') {
+    const partition = (low, high) => {
+      const pivot = a[high];
+      let boundary = low;
+      for (let j = low; j < high; j += 1) {
+        record([j, high], 'Compare ' + a[j] + ' with pivot ' + pivot + '.');
+        if (a[j] <= pivot) {
+          [a[boundary], a[j]] = [a[j], a[boundary]];
+          record([boundary, j], 'Move a value smaller than the pivot to the left partition.');
+          boundary += 1;
+        }
+      }
+      [a[boundary], a[high]] = [a[high], a[boundary]];
+      record([boundary], 'Pivot ' + pivot + ' is now in its final position.');
+      return boundary;
+    };
+    const sort = (low, high) => {
+      if (low >= high) return;
+      const pivotIndex = partition(low, high);
+      sort(low, pivotIndex - 1);
+      sort(pivotIndex + 1, high);
+    };
+    sort(0, a.length - 1);
+  } else if (algorithm === 'merge') {
+    const sort = (left, right) => {
+      if (left >= right) return;
+      const middle = Math.floor((left + right) / 2);
+      sort(left, middle);
+      sort(middle + 1, right);
+      const merged = [];
+      let i = left;
+      let j = middle + 1;
+      while (i <= middle && j <= right) {
+        record([i, j], 'Compare the front values of two sorted halves.');
+        if (a[i] <= a[j]) merged.push(a[i++]);
+        else merged.push(a[j++]);
+      }
+      while (i <= middle) merged.push(a[i++]);
+      while (j <= right) merged.push(a[j++]);
+      merged.forEach((value, offset) => { a[left + offset] = value; });
+      record(Array.from({ length: right - left + 1 }, (_, offset) => left + offset), 'Merge the two sorted halves into this range.');
+    };
+    sort(0, a.length - 1);
   } else {
     for (let end = a.length - 1; end > 0; end -= 1) {
       for (let j = 0; j < end; j += 1) {
@@ -139,6 +182,25 @@ function createTraversal(mode) {
   return frames;
 }
 
+function createTreeTraversal(mode) {
+  const tree = {
+    8: [3, 10], 3: [1, 6], 10: [null, 14], 1: [null, null],
+    6: [4, 7], 14: [13, null], 4: [null, null], 7: [null, null], 13: [null, null]
+  };
+  const order = [];
+  const visit = node => {
+    if (node === null || node === undefined) return;
+    const children = tree[node] || [null, null];
+    if (mode === 'preorder') order.push(node);
+    visit(children[0]);
+    if (mode === 'inorder') order.push(node);
+    visit(children[1]);
+    if (mode === 'postorder') order.push(node);
+  };
+  visit(8);
+  return order.map((node, index) => ({ node: String(node), visited: order.slice(0, index + 1) }));
+}
+
 const NETWORK_FLOWS = {
   tcp: {
     title: 'TCP three-way handshake',
@@ -193,6 +255,9 @@ function App() {
   const [structureInput, setStructureInput] = useState('42');
   const [stack, setStack] = useState([12, 24]);
   const [queue, setQueue] = useState([7, 14, 21]);
+  const [linkedList, setLinkedList] = useState([10, 20, 30]);
+  const [treeMode, setTreeMode] = useState('inorder');
+  const [treeStep, setTreeStep] = useState(0);
   const [traversalMode, setTraversalMode] = useState('bfs');
   const [traversalStep, setTraversalStep] = useState(0);
   const [networkMode, setNetworkMode] = useState('tcp');
@@ -248,6 +313,8 @@ function App() {
   const searchFrames = useMemo(() => createSearchFrames(sortedSearchValues, Number(searchTarget), searchMode), [searchTarget, searchMode]);
   const currentSearch = searchFrames[Math.min(searchStep, searchFrames.length - 1)];
   const traversalFrames = useMemo(() => createTraversal(traversalMode), [traversalMode]);
+  const treeFrames = useMemo(() => createTreeTraversal(treeMode), [treeMode]);
+  const currentTree = treeFrames[Math.min(treeStep, treeFrames.length - 1)];
   const currentTraversal = traversalFrames[Math.min(traversalStep, traversalFrames.length - 1)];
   const flow = NETWORK_FLOWS[networkMode];
   const currentNetwork = flow.steps[Math.min(networkStep, flow.steps.length - 1)];
@@ -276,6 +343,13 @@ function App() {
   const changeTraversal = mode => {
     setTraversalMode(mode);
     setTraversalStep(0);
+  };
+  const listAction = action => {
+    const value = Number(structureInput);
+    if (action === 'head' && Number.isFinite(value)) setLinkedList(items => [value, ...items].slice(0, 8));
+    if (action === 'tail' && Number.isFinite(value)) setLinkedList(items => [...items, value].slice(-8));
+    if (action === 'remove-head') setLinkedList(items => items.slice(1));
+    if (action === 'remove-tail') setLinkedList(items => items.slice(0, -1));
   };
   const changeNetwork = mode => {
     setNetworkMode(mode);
@@ -410,11 +484,11 @@ function App() {
         <section className="lab-module sort-module">
           <div className="module-top"><div className="module-icon purple"><Binary size={17}/></div><div><span className="card-kicker">ARRAYS · SORTING</span><h3>Sorting visualizer</h3></div><span className="module-number">01</span></div>
           <p className="module-description">Watch how an algorithm compares and moves values into ascending order.</p>
-          <div className="control-row"><label htmlFor="sort-mode">Algorithm</label><select id="sort-mode" value={sortMode} onChange={e => changeSort(e.target.value)}><option value="bubble">Bubble sort</option><option value="selection">Selection sort</option><option value="insertion">Insertion sort</option></select></div>
+          <div className="control-row"><label htmlFor="sort-mode">Algorithm</label><select id="sort-mode" value={sortMode} onChange={e => changeSort(e.target.value)}><option value="bubble">Bubble sort</option><option value="selection">Selection sort</option><option value="insertion">Insertion sort</option><option value="quick">Quick sort</option><option value="merge">Merge sort</option></select></div>
           <div className="sort-bars">{currentSort.values.map((n, index) => <div className="sort-bar-wrap" key={index}><div className={'sort-bar ' + (currentSort.active.includes(index) ? 'bar-active' : '') + (sortStep === sortFrames.length - 1 ? ' bar-complete' : '')} style={{ height: (n * 5 + 18) + 'px' }}/><small>{n}</small></div>)}</div>
           <div className="step-caption"><span>STEP {sortStep} / {sortFrames.length - 1}</span>{currentSort.note}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => setSortStep(step => Math.min(step + 1, sortFrames.length - 1))} disabled={sortStep >= sortFrames.length - 1}><Play size={13}/> Next step</button><button onClick={() => setSortStep(sortFrames.length - 1)}>Run all</button><button onClick={resetSort}><RotateCcw size={13}/> Reset</button><button onClick={shuffleSort}>Shuffle</button></div>
-          <div className="complexity-row"><span>Bubble <b>O(n²)</b></span><span>Selection <b>O(n²)</b></span><span>Insertion <b>O(n²)</b></span></div>
+          <div className="complexity-row"><span>Bubble <b>O(n²)</b></span><span>Selection <b>O(n²)</b></span><span>Insertion <b>O(n²)</b></span><span>Quick avg <b>O(n log n)</b></span><span>Merge <b>O(n log n)</b></span></div>
         </section>
 
         <section className="lab-module search-module">
@@ -447,6 +521,30 @@ function App() {
           <div className="step-caption"><span>STEP {traversalStep} / {traversalFrames.length - 1}</span>{currentTraversal.note}</div>
           <div className="module-actions"><button className="module-primary" onClick={() => setTraversalStep(step => Math.min(step + 1, traversalFrames.length - 1))} disabled={traversalStep >= traversalFrames.length - 1}><Play size={13}/> Next visit</button><button onClick={() => setTraversalStep(0)}><RotateCcw size={13}/> Reset</button></div>
           <div className="complexity-row"><span>BFS <b>O(V + E)</b></span><span>DFS <b>O(V + E)</b></span></div>
+        </section>
+
+        <section className="lab-module linked-list-module">
+          <div className="module-top"><div className="module-icon cyan"><Layers3 size={17}/></div><div><span className="card-kicker">LINKED LIST</span><h3>Build a linked list</h3></div><span className="module-number">05</span></div>
+          <p className="module-description">Add or remove nodes at either end. Each node stores data and points to the next node.</p>
+          <div className="structure-input"><input aria-label="Linked list value" type="number" value={structureInput} onChange={e => setStructureInput(e.target.value)}/><span>NODE VALUE</span></div>
+          <div className="linked-list-visual">{linkedList.length ? linkedList.map((value, index) => <div className="linked-node-wrap" key={index}><div className="linked-node"><b>{value}</b><small>{index === 0 ? 'HEAD' : 'NODE'}</small></div>{index < linkedList.length - 1 && <ArrowRight size={14}/>}</div>) : <span className="empty-state">Head → null (empty list)</span>}</div>
+          <div className="module-actions"><button className="module-primary" onClick={() => listAction('head')}>Insert head</button><button onClick={() => listAction('tail')}>Insert tail</button><button onClick={() => listAction('remove-head')} disabled={!linkedList.length}>Delete head</button><button onClick={() => listAction('remove-tail')} disabled={!linkedList.length}>Delete tail</button></div>
+          <div className="complexity-row"><span>Head insert <b>O(1)</b></span><span>Tail traversal <b>O(n)</b></span><span>Extra pointer per node</span></div>
+        </section>
+
+        <section className="lab-module tree-module">
+          <div className="module-top"><div className="module-icon orange"><Binary size={17}/></div><div><span className="card-kicker">TREES · BST</span><h3>Tree traversal</h3></div><span className="module-number">06</span></div>
+          <p className="module-description">Visit the same Binary Search Tree in three different orders.</p>
+          <div className="control-row"><label htmlFor="tree-mode">Traversal</label><select id="tree-mode" value={treeMode} onChange={e => { setTreeMode(e.target.value); setTreeStep(0); }}><option value="inorder">Inorder (LNR)</option><option value="preorder">Preorder (NLR)</option><option value="postorder">Postorder (LRN)</option></select></div>
+          <div className="tree-visual">
+            <div className="tree-level"><span className={currentTree.visited.includes('8') ? 'tree-node visited' : 'tree-node'}>8</span></div>
+            <div className="tree-level"><span className={currentTree.visited.includes('3') ? 'tree-node visited' : 'tree-node'}>3</span><span className={currentTree.visited.includes('10') ? 'tree-node visited' : 'tree-node'}>10</span></div>
+            <div className="tree-level"><span className={currentTree.visited.includes('1') ? 'tree-node visited' : 'tree-node'}>1</span><span className={currentTree.visited.includes('6') ? 'tree-node visited' : 'tree-node'}>6</span><span className={currentTree.visited.includes('14') ? 'tree-node visited' : 'tree-node'}>14</span></div>
+            <div className="tree-level"><span className={currentTree.visited.includes('4') ? 'tree-node visited' : 'tree-node'}>4</span><span className={currentTree.visited.includes('7') ? 'tree-node visited' : 'tree-node'}>7</span><span className={currentTree.visited.includes('13') ? 'tree-node visited' : 'tree-node'}>13</span></div>
+          </div>
+          <div className="traversal-order"><span>VISIT ORDER</span><b>{currentTree.visited.join(' → ') || '—'}</b></div>
+          <div className="module-actions"><button className="module-primary" onClick={() => setTreeStep(step => Math.min(step + 1, treeFrames.length - 1))} disabled={treeStep >= treeFrames.length - 1}><Play size={13}/> Next node</button><button onClick={() => setTreeStep(0)}><RotateCcw size={13}/> Reset</button></div>
+          <div className="complexity-row"><span>Traversal <b>O(n)</b></span><span>BST search avg <b>O(log n)</b></span></div>
         </section>
       </div>
       <div className="concept-strip"><div><BookOpen size={16}/><b>What you're practising</b></div><p>Arrays · comparisons · swaps · sorted order · binary search · LIFO · FIFO · graph traversal · queue · stack · Big-O time complexity.</p></div>
