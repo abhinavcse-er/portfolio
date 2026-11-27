@@ -115,7 +115,7 @@ const APPS = [
 const TECH = ['C', 'C++', 'Java', 'JavaScript', 'Python', 'React', 'Node.js', 'Express', 'SQL', 'Git & GitHub', 'Linux', 'Networking', 'Cybersecurity'];
 
 const QUIZ = [
-  { q: 'What is Abhinav currently studying?', options: ['Diploma in Computer Science and Engineering', 'Mechanical Engineering', 'Civil Engineering', 'MBA'], answer: 0, why: 'He studied Computer Science and Engineering at diploma level and is focused on software engineering.' },
+  { q: 'What did Abhinav study?', options: ['Diploma in Computer Science and Engineering', 'Mechanical Engineering', 'Civil Engineering', 'MBA'], answer: 0, why: 'He studied Computer Science and Engineering at diploma level and is focused on software engineering.' },
   { q: 'Which kind of products does he enjoy building?', options: ['Only static landing pages', 'Full-stack tools and useful apps', 'Video editing software only', 'Hardware chips'], answer: 1, why: 'His projects explore full-stack applications, AI interfaces, student tools, music experiences and practical platforms.' },
   { q: 'Which two foundations is he actively strengthening?', options: ['DSA and computer networks', 'Accounting and biology', '3D animation and film', 'Architecture and chemistry'], answer: 0, why: 'Data structures, algorithms, networking and security fundamentals are core parts of his learning journey.' },
   { q: 'Where is Abhinav based?', options: ['Bihar, India', 'London, UK', 'Tokyo, Japan', 'Toronto, Canada'], answer: 0, why: 'He is based in Bihar, India.' }
