@@ -112,10 +112,10 @@ const APPS = [
   { id: 'contact', label: 'Contact', sub: 'Start a conversation', icon: Mail, color: 'orange' }
 ];
 
-const TECH = ['C++', 'Java', 'JavaScript', 'Python', 'React', 'Node.js', 'Express', 'SQL', 'Git & GitHub', 'Linux', 'Networking', 'Cybersecurity'];
+const TECH = ['C', 'C++', 'Java', 'JavaScript', 'Python', 'React', 'Node.js', 'Express', 'SQL', 'Git & GitHub', 'Linux', 'Networking', 'Cybersecurity'];
 
 const QUIZ = [
-  { q: 'What is Abhinav currently studying?', options: ['Mechanical Engineering', 'B.Tech CSE (Cybersecurity)', 'Civil Engineering', 'MBA'], answer: 1, why: 'He is a second-year B.Tech student in CSE (Cybersecurity), with a strong interest in software engineering.' },
+  { q: 'What is Abhinav currently studying?', options: ['Diploma in Computer Science and Engineering', 'Mechanical Engineering', 'Civil Engineering', 'MBA'], answer: 0, why: 'He studied Computer Science and Engineering at diploma level and is focused on software engineering.' },
   { q: 'Which kind of products does he enjoy building?', options: ['Only static landing pages', 'Full-stack tools and useful apps', 'Video editing software only', 'Hardware chips'], answer: 1, why: 'His projects explore full-stack applications, AI interfaces, student tools, music experiences and practical platforms.' },
   { q: 'Which two foundations is he actively strengthening?', options: ['DSA and computer networks', 'Accounting and biology', '3D animation and film', 'Architecture and chemistry'], answer: 0, why: 'Data structures, algorithms, networking and security fundamentals are core parts of his learning journey.' },
   { q: 'Where is Abhinav based?', options: ['Bihar, India', 'London, UK', 'Tokyo, Japan', 'Toronto, Canada'], answer: 0, why: 'He is based in Bihar, India.' }
@@ -505,7 +505,7 @@ function App() {
     if (!command) return;
     const responses = {
       help: 'Commands: about · projects · skills · dsa · network · contact · clear',
-      about: 'Abhinav Kumar Mishra | B.Tech CSE (Cybersecurity) student | Bihar, India | Interested in software engineering.',
+      about: 'Abhinav Kumar Mishra | Computer Science and Engineering diploma | Bihar, India | Interested in software engineering.',
       projects: 'Current builds include NeuroX AI, phishing detection, DigiEduHub, Sugarcane Digital Khata and MEHFIL. Open the Projects app for repositories.',
       skills: 'Learning and building with C++, Java, JavaScript, Python, React, Node.js, SQL, Linux, networking and cybersecurity.',
       dsa: 'Open DSA Arcade to explore sorting, searching, stacks, queues, BFS and DFS.',
@@ -595,7 +595,7 @@ function App() {
     <div className="app-content">
       <div className="app-hero"><div><span className="eyebrow">PROFILE / 001</span><h2>The human behind <em>the keyboard.</em></h2><p>Curious by default. Builder by choice. Learning one system at a time.</p></div><div className="profile-avatar">A<span>.</span></div></div>
       <div className="profile-grid">
-        <div className="profile-story panel-card"><span className="card-kicker">ABOUT ME</span><h3>Hey, I'm Abhinav Kumar Mishra.</h3><p>I'm a second-year B.Tech student in Computer Science and Engineering (Cybersecurity), based in Bihar, India. My strongest interest is software engineering: building products, writing useful code and understanding how systems fit together.</p><p>From AI interfaces and student tools to practical platforms, I learn best by taking an idea and making it work. Alongside development, I'm strengthening my foundations in data structures, algorithms, computer networks and security.</p><div className="story-tags"><span>Problem solver</span><span>Builder</span><span>Always learning</span></div></div>
+        <div className="profile-story panel-card"><span className="card-kicker">ABOUT ME</span><h3>Hey, I'm Abhinav Kumar Mishra.</h3><p>I studied Computer Science and Engineering at diploma level and am based in Bihar, India. My strongest interest is software engineering: building products, writing useful code and understanding how systems fit together.</p><p>From AI interfaces and student tools to practical platforms, I learn best by taking an idea and making it work. Alongside development, I'm strengthening my foundations in data structures, algorithms, computer networks and security.</p><div className="story-tags"><span>Problem solver</span><span>Builder</span><span>Always learning</span></div></div>
         <div className="profile-facts panel-card"><span className="card-kicker">SYSTEM INFO</span><div className="fact-row"><span>Role</span><b>Student developer</b></div><div className="fact-row"><span>Education</span><b>B.Tech · CSE (Cyber)</b></div><div className="fact-row"><span>Location</span><b>Bihar, India</b></div><div className="fact-row"><span>Primary focus</span><b>Software engineering</b></div><div className="fact-row"><span>Exploring</span><b>DSA · Networks · Security</b></div></div>
       </div>
       <div className="panel-card skill-card"><div className="card-heading"><div><span className="card-kicker">TOOLBOX</span><h3>Tools I'm learning and using</h3></div><span className="live-tag"><i/> EVOLVING</span></div><div className="skill-cloud">{TECH.map(t => <span key={t}>{t}</span>)}</div><p className="soft-note">Skills are a journey, not a scorecard. This list reflects the technologies and foundations I am actively exploring.</p></div>
