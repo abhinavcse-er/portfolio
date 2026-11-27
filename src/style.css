@@ -1185,11 +1185,54 @@ a:hover { text-decoration: none; }
   .site-nav { display: none; position: absolute; top: 65px; left: 12px; right: 12px; padding: 12px; flex-wrap: wrap; justify-content: flex-start; border: 1px solid var(--line); border-radius: 14px; background: #0d1422; box-shadow: 0 18px 45px rgba(0,0,0,.4); }
   .site-nav.mobile-open { display: flex; }
   .site-header.menu-open .site-nav { display: flex; }
-  .landing-page { padding-top: 8px; }
-  .landing-hero { grid-template-columns: 1fr; min-height: auto; padding: 38px 0; }
-  .landing-hero h2 { font-size: clamp(42px, 12vw, 58px); }
-  .landing-visual { min-height: 230px; }
-  .landing-visual img, .landing-avatar { width: 142px; height: 142px; }
+  .landing-page { padding-top: 4px; }
+  .landing-hero {
+    display: block;
+    position: relative;
+    min-height: 0;
+    padding: 30px 0 24px;
+  }
+  .landing-copy { max-width: 100%; }
+  .landing-copy .micro-label {
+    max-width: calc(100% - 88px);
+    font-size: 7px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+  }
+  .landing-overline { margin: 24px 0 10px; font-size: 9px; }
+  .landing-hero h2 {
+    max-width: 100%;
+    font-size: clamp(35px, 9.2vw, 43px);
+    line-height: 1.08;
+    letter-spacing: -.055em;
+  }
+  .landing-description {
+    max-width: 100%;
+    margin: 15px 0 18px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .landing-hero .welcome-actions { gap: 12px; flex-wrap: wrap; }
+  .landing-hero .primary-action { min-height: 42px; padding: 0 15px; font-size: 11px; }
+  .landing-hero .text-action { font-size: 11px; }
+  .landing-meta { gap: 9px 14px; margin-top: 20px; font-size: 7px; line-height: 1.6; }
+  .landing-visual {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    width: 72px;
+    min-height: 72px;
+    border-radius: 50%;
+    border-color: rgba(105,219,224,.28);
+    background: #101a2b;
+  }
+  .landing-visual img, .landing-avatar {
+    width: 60px;
+    height: 60px;
+    border-width: 2px;
+    font-size: 25px;
+  }
+  .landing-visual-caption { display: none; }
   .landing-metrics { grid-template-columns: repeat(2,1fr); }
   .landing-metrics div:nth-child(2) { border-right: 0; }
   .landing-metrics div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
