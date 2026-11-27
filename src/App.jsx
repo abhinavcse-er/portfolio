@@ -545,20 +545,23 @@ function App() {
     <div className="landing-page">
       <section className="landing-hero">
         <div className="landing-copy">
-          <span className="micro-label"><Sparkles size={13}/> SOFTWARE ENGINEERING · SYSTEMS · CURIOSITY</span>
+          <span className="micro-label"><Sparkles size={13}/> SOFTWARE ENGINEERING <i/> SYSTEMS <i/> CURIOSITY</span>
           <p className="landing-overline">HELLO, I'M ABHINAV KUMAR MISHRA</p>
-          <h2>I build useful digital products<span>.</span></h2>
-          <p className="landing-description">A software-focused developer exploring full-stack engineering, AI, data structures and computer networks — learning by building real projects.</p>
+          <h2>I build software that solves <span>real problems.</span></h2>
+          <p className="landing-description">Software-focused developer exploring full-stack engineering, AI and computer systems. I learn by turning ideas into useful, working products.</p>
           <div className="welcome-actions">
-            <button className="primary-action" onClick={() => openApp('projects')}>Explore projects <ArrowRight size={15}/></button>
-            <button className="text-action" onClick={() => openApp('profile')}>About me <ArrowUpRight size={15}/></button>
+            <button className="primary-action" onClick={() => openApp('projects')}>Explore my work <ArrowRight size={15}/></button>
+            <button className="text-action" onClick={() => openApp('profile')}>Get to know me <ArrowUpRight size={15}/></button>
           </div>
           <div className="landing-meta"><span><i className="online-dot"/> OPEN TO INTERNSHIPS & COLLABORATION</span><span>BIHAR, INDIA</span></div>
         </div>
-        <div className="landing-visual">
-          {github?.profile?.avatar ? <img src={github.profile.avatar} alt="Abhinav's GitHub avatar"/> : <div className="landing-avatar">A<span>.</span></div>}
+        <aside className="landing-visual" aria-label="Developer focus">
+          <div className="hero-monogram">A<span>.</span></div>
+          <span className="hero-visual-kicker">CURRENTLY BUILDING</span>
+          <strong>Ideas into<br/>working software.</strong>
+          <div className="hero-visual-tags"><span>FULL-STACK</span><span>AI</span><span>SYSTEMS</span></div>
           <div className="landing-visual-caption"><span className="online-dot"/> BUILD · LEARN · SHIP</div>
-        </div>
+        </aside>
       </section>
       <section className="landing-metrics">
         <div><strong>{github?.stats?.repositories ?? FALLBACK_PROJECTS.length}</strong><span>Public projects</span></div>
