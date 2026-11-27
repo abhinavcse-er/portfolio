@@ -103,8 +103,11 @@ function getProjectPresentation(project) {
 }
 
 const APPS = [
-  { id: 'profile', label: 'My Profile', sub: 'Who is Abhinav?', icon: UserRound, color: 'violet' },
+  { id: 'profile', label: 'About Me', sub: 'Background and interests', icon: UserRound, color: 'violet' },
   { id: 'projects', label: 'Projects', sub: 'Things I have built', icon: Layers3, color: 'blue' },
+  { id: 'playground', label: 'Technical Playground', sub: 'Interactive DSA and systems labs', icon: Cpu, color: 'cyan' },
+  { id: 'skills', label: 'Skills & Technologies', sub: 'Tools and foundations', icon: Code2, color: 'green' },
+  { id: 'achievements', label: 'Achievements', sub: 'Build milestones and progress', icon: Star, color: 'amber' },
   { id: 'dsa', label: 'DSA Arcade', sub: 'Play with algorithms', icon: Binary, color: 'green' },
   { id: 'network', label: 'Network Lab', sub: 'Explore the internet', icon: Network, color: 'cyan' },
   { id: 'terminal', label: 'Terminal', sub: 'Talk to my OS', icon: SquareTerminal, color: 'amber' },
@@ -339,7 +342,7 @@ const NETWORK_FLOWS = {
 
 function getRouteFromHash() {
   const route = window.location.hash.replace(/^#\/?/, '').split('/')[0];
-  return ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact'].includes(route) ? route : 'home';
+  return ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact', 'playground', 'skills', 'achievements'].includes(route) ? route : 'home';
 }
 
 function App() {
@@ -455,7 +458,7 @@ function App() {
   const currentQuiz = QUIZ[quizIndex];
 
   const openApp = id => {
-    const next = ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact'].includes(id) ? id : 'home';
+    const next = ['home', 'profile', 'projects', 'dsa', 'network', 'terminal', 'quest', 'contact', 'playground', 'skills', 'achievements'].includes(id) ? id : 'home';
     if (getRouteFromHash() !== next) window.history.pushState(null, '', '#/' + next);
     setActiveApp(next);
     setMobileMenu(false);
@@ -573,14 +576,13 @@ function App() {
         <div className="section-title-row"><div><span className="eyebrow">EXPLORE THE PORTFOLIO</span><h3>Choose where to start</h3></div><span className="muted-note">Every section has its own page</span></div>
         <div className="landing-nav-grid">
           {[
-            ['profile','About','My background, interests and toolbox',UserRound],
-            ['projects','Projects','Real repositories and live applications',Layers3],
-            ['dsa','DSA Arcade','Interactive algorithms and data structures',Binary],
-            ['network','Network Lab','TCP, DNS, OSI and subnetting',Network],
-            ['terminal','Terminal','Explore the portfolio command line',SquareTerminal],
-            ['quest','Know Me Quiz','A quick interactive introduction',CircleHelp],
-            ['contact','Contact','Internships, feedback and collaboration',Mail]
-          ].map(([id,label,description,Icon]) => <button className="landing-nav-card" key={id} onClick={() => openApp(id)}><span className="landing-nav-icon"><Icon size={19}/></span><span><b>{label}</b><small>{description}</small></span><ArrowUpRight size={16}/></button>)}
+            ['projects','01','Projects','Real repositories, product builds and live demos',Layers3,'blue'],
+            ['playground','02','Technical Playground','Explore algorithms, data structures and network concepts',Cpu,'cyan'],
+            ['skills','03','Skills & Technologies','Languages, frameworks and foundations I use and learn',Code2,'green'],
+            ['profile','04','About Me','My background, interests and approach to building software',UserRound,'violet'],
+            ['achievements','05','Achievements','A transparent look at projects shipped and learning milestones',Star,'amber'],
+            ['contact','06','Contact','Internships, collaboration and professional conversations',Mail,'pink']
+          ].map(([id,number,label,description,Icon,tone]) => <button className={'landing-nav-card nav-card-' + tone} key={id} onClick={() => openApp(id)}><span className="landing-nav-number">{number}</span><span className="landing-nav-icon"><Icon size={20}/></span><span className="landing-nav-copy"><b>{label}</b><small>{description}</small><em>Explore section <ArrowUpRight size={13}/></em></span><ArrowUpRight className="landing-nav-arrow" size={17}/></button>)}
         </div>
       </section>
       <section className="landing-bottom">
@@ -788,6 +790,35 @@ function App() {
     </div>
   );
 
+  const renderPlayground = () => (
+    <div className="app-content">
+      <div className="app-hero"><div><span className="eyebrow">INTERACTIVE WORKSPACE / 008</span><h2>Explore the <em>playground.</em></h2><p>Learn by interacting with visual, step-by-step experiments. No setup required.</p></div><span className="arcade-badge"><Cpu size={15}/> HANDS-ON</span></div>
+      <div className="hub-grid">
+        <button className="hub-card" onClick={() => openApp('dsa')}><span className="hub-icon"><Binary size={21}/></span><b>DSA Arcade</b><small>Sorting, searching, stacks, queues, linked lists, trees and graphs.</small><span>Open lab <ArrowUpRight size={14}/></span></button>
+        <button className="hub-card" onClick={() => openApp('network')}><span className="hub-icon"><Network size={21}/></span><b>Network Lab</b><small>Walk through TCP handshakes, DNS resolution and the OSI model.</small><span>Open lab <ArrowUpRight size={14}/></span></button>
+        <button className="hub-card" onClick={() => openApp('terminal')}><span className="hub-icon"><SquareTerminal size={21}/></span><b>Portfolio Terminal</b><small>Explore the portfolio using simple commands and shortcuts.</small><span>Open terminal <ArrowUpRight size={14}/></span></button>
+      </div>
+    </div>
+  );
+
+  const renderSkills = () => (
+    <div className="app-content">
+      <div className="app-hero"><div><span className="eyebrow">TOOLBOX / 009</span><h2>Skills & <em>technologies.</em></h2><p>A practical snapshot of the tools and computer-science foundations I am learning and using.</p></div><span className="live-tag"><i/> EVOLVING</span></div>
+      <div className="skill-card panel-card"><div className="card-heading"><div><span className="card-kicker">LANGUAGES & DEVELOPMENT</span><h3>Tools in my workflow</h3></div></div><div className="skill-cloud">{TECH.map(t => <span key={t}>{t}</span>)}</div><p className="soft-note">This is a learning-in-progress list, not a claim of expert-level proficiency.</p></div>
+      <div className="skills-focus-grid"><article className="panel-card"><span className="card-kicker">SOFTWARE ENGINEERING</span><h3>Building useful products</h3><p>JavaScript, React, Node.js, Express, SQL and Git-based workflows.</p></article><article className="panel-card"><span className="card-kicker">CORE FOUNDATIONS</span><h3>Understanding systems</h3><p>Data structures, algorithms, operating systems, computer networks and defensive security fundamentals.</p></article></div>
+      <div className="next-step-card"><div><span className="card-kicker">SEE THE WORK</span><h3>Skills make more sense in context.</h3><p>Explore the repositories and live applications where I apply these tools.</p></div><button className="primary-action" onClick={() => openApp('projects')}>View projects <ArrowRight size={15}/></button></div>
+    </div>
+  );
+
+  const renderAchievements = () => (
+    <div className="app-content">
+      <div className="app-hero"><div><span className="eyebrow">PROGRESS LOG / 010</span><h2>Built, learned, <em>improved.</em></h2><p>Milestones from the work itself. No invented awards, certificates or inflated claims.</p></div><span className="arcade-badge"><Star size={15}/> BUILD LOG</span></div>
+      <div className="projects-summary"><div><strong>{github?.stats?.repositories ?? FALLBACK_PROJECTS.length}</strong><span>Public repositories</span></div><div><strong>{liveProjects.length}</strong><span>Projects with live demos</span></div><div><strong>{github?.stats?.languages ?? new Set(FALLBACK_PROJECTS.map(project => project.language).filter(Boolean)).size}</strong><span>Languages represented</span></div><div className="projects-sync"><span className={githubError ? 'data-indicator stale' : 'data-indicator'}/>{githubError ? 'Fallback project data' : 'GitHub-backed overview'}</div></div>
+      <div className="achievement-list"><article><span>01</span><div><b>From idea to working software</b><p>Built projects spanning AI interfaces, phishing-risk analysis, a music community, education resources and ride-booking workflows.</p></div></article><article><span>02</span><div><b>Learning through interactive systems</b><p>Created hands-on DSA visualizers and networking walkthroughs to make technical concepts easier to explore.</p></div></article><article><span>03</span><div><b>Shipping and iterating</b><p>Working across frontend, backend, APIs, databases and deployment while documenting real limitations.</p></div></article></div>
+      <div className="next-step-card"><div><span className="card-kicker">NEXT MILESTONE</span><h3>Keep building in public.</h3><p>Follow the source code and updates on GitHub.</p></div><a className="primary-action" href={'https://github.com/' + USER} target="_blank" rel="noreferrer">Visit GitHub <ExternalLink size={15}/></a></div>
+    </div>
+  );
+
   const renderContact = () => (
     <div className="app-content contact-app">
       <div className="app-hero"><div><span className="eyebrow">COMMUNICATION CENTER / 007</span><h2>Let's build something <em>useful.</em></h2><p>Open to internships, collaborations, feedback and conversations about technology.</p></div><div className="contact-orb"><Mail size={25}/></div></div>
@@ -818,6 +849,9 @@ function App() {
               {activeApp === 'home' && renderHome()}
               {activeApp === 'profile' && renderProfile()}
               {activeApp === 'projects' && renderProjects()}
+              {activeApp === 'playground' && renderPlayground()}
+              {activeApp === 'skills' && renderSkills()}
+              {activeApp === 'achievements' && renderAchievements()}
               {activeApp === 'dsa' && renderDsa()}
               {activeApp === 'network' && renderNetwork()}
               {activeApp === 'terminal' && renderTerminal()}
